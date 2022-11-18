@@ -21,6 +21,7 @@ runs:
   steps:
     - id: new-version
       run: |
+          ls -la
           opt=''
           [[ "${{ inputs.force-re-evaluate }}" == 'true' ]] && opt='-f'
           echo "new-version=$(./scripts/detectNewVersion.sh $opt)" >> $GITHUB_OUTPUT
