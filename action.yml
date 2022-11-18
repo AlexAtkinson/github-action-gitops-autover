@@ -19,6 +19,7 @@ outputs:
 runs:
   using: "composite"
   steps:
+    - uses: actions/checkout@v3
     - id: new-version
       run: |
           ls -la
