@@ -2,7 +2,7 @@ name: 'GitOps Automatic Versioning'
 author: 'EvilKittenLord'
 description: 'Automatically determine semantic version based on branch merge history.'
 branding:
-  icon: tool
+  icon: git-branch
   color: white
 inputs:
   force-re-evaluate:
