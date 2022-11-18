@@ -2,7 +2,7 @@
 
 Automatically determine the [semantic version](https://semver.org/) based on merge history (not commit messages), with MINIMAL discipline dependencies.
 
-This is accomplished by counting the merges for 'enhancement/.\*', 'feature/.\*', 'bugfix/.\*', 'hotfix/.\*' branches into either the 'main' or 'master' branch.
+This is accomplished by counting the merges for 'enhancement/.\*', 'feature/.\*', 'fix/.\*', 'bugfix/.\*', 'hotfix/.\*', 'ops/.\*' branches into either the 'main' or 'master' branch.
 
 ## Appropriate Use Cases
 
@@ -80,7 +80,7 @@ For example, the name of the branch for a new awesome feature named Awesome Feat
 
         ERROR: No feature, enhancement, fix, bugfix, hotfix, or ops branches detected!
 
-  - When encountering this scenario, and a build is desired, you can simply create a branch with the appropriate naming convention and an empty commit, then merge it. Or use the bump scripts in the '.devops/' directory of the repo for this action.
+  - When encountering this scenario, and a build is desired, you can simply create a branch with the appropriate naming convention and an empty commit, then merge it. Or use the bump scripts in the 'scripts/' directory of the repo for this action.
 
 - Merged branches not conforming to the above naming scheme will simply be ignored.
   - HINT: This can be useful when you don't want to increment the version.

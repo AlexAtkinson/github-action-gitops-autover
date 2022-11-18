@@ -23,9 +23,9 @@ runs:
       run: |
           opt=''
           [[ "${{ inputs.force-re-evaluate }}" == 'true' ]] && opt='-f'
-          echo "new-version=$(.devops/detectNewVersion.sh $opt)" >> $GITHUB_OUTPUT
+          echo "new-version=$(./scripts/detectNewVersion.sh $opt)" >> $GITHUB_OUTPUT
       shell: bash
     - id: previous-version
       run: |
-          echo "previous-version=$(.devops/detectPreviousVersion.sh)" >> $GITHUB_OUTPUT
+          echo "previous-version=$(./scripts/detectPreviousVersion.sh)" >> $GITHUB_OUTPUT
       shell: bash
