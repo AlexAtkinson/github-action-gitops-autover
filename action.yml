@@ -1,0 +1,31 @@
+name: 'GitOps Automatic Versioning'
+author: 'EvilKittenLord'
+description: 'Automatically determine semantic version based on branch merge history.'
+branding:
+  icon: tool
+  color: white
+inputs:
+  force-re-evaluate:
+    description: "Forces a re-evaluation of the entire git history."
+    required: false
+    default: 'false'
+outputs:
+  new-version:
+    description: "New Version"
+    value: ${{ steps.version.outputs.new-version }}
+  previous-version:
+    description: "Previous Version"
+    value: ${{ steps.version.outputs.previous-version }}
+runs:
+  using: "composite"
+  steps:
+    - id: new-version
+      run: |
+          opt=''
+          [[ "${{ inputs.force-re-evaluate }}" == 'true' ]] && opt='-f'
+          echo "new-version=$(.devops/detectNewVersion.sh $opt)" >> $GITHUB_OUTPUT
+      shell: bash
+    - id: previous-version
+      run: |
+          echo "previous-version=$(.devops/detectPreviousVersion.sh)" >> $GITHUB_OUTPUT
+      shell: bash
