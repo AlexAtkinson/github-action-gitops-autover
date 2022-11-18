@@ -12,17 +12,16 @@ inputs:
 outputs:
   new-version:
     description: "New Version"
-    value: ${{ steps.version.outputs.new-version }}
+    value: ${{ steps.new-version.outputs.new-version }}
   previous-version:
     description: "Previous Version"
-    value: ${{ steps.version.outputs.previous-version }}
+    value: ${{ steps.previous-version.outputs.previous-version }}
 runs:
   using: "composite"
   steps:
     - uses: actions/checkout@v3
     - id: new-version
       run: |
-          ls -la ${{ github.action_path }}
           opt=''
           [[ "${{ inputs.force-re-evaluate }}" == 'true' ]] && opt='-f'
           echo "new-version=$(${{ github.action_path }}/scripts/detectNewVersion.sh $opt)" >> $GITHUB_OUTPUT
