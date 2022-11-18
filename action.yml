@@ -25,9 +25,9 @@ runs:
           ls -la ${{ github.action_path }}
           opt=''
           [[ "${{ inputs.force-re-evaluate }}" == 'true' ]] && opt='-f'
-          echo "new-version=$(./${{ github.action_path }}/scripts/detectNewVersion.sh $opt)" >> $GITHUB_OUTPUT
+          echo "new-version=$(${{ github.action_path }}/scripts/detectNewVersion.sh $opt)" >> $GITHUB_OUTPUT
       shell: bash
     - id: previous-version
       run: |
-          echo "previous-version=$(./${{ github.action_path }}/scripts/detectPreviousVersion.sh)" >> $GITHUB_OUTPUT
+          echo "previous-version=$(${{ github.action_path }}/scripts/detectPreviousVersion.sh)" >> $GITHUB_OUTPUT
       shell: bash
