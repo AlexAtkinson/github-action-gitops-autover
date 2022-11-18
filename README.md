@@ -8,8 +8,7 @@ This is accomplished by counting the merges for 'enhancement/.\*', 'feature/.\*'
 
 This action is _most_ suitable for git projects with the following operational design:
 
-- Each merge is intended to produce an artifact.
-- Each artifact is potentially releasabe.
+- Each merge into main|master is intended to produce an artifact, following the "everything is potentially releasabe" approach.
 
 This action is _not_ suitable for projects requiring pre-release, beta, etc., type fields. Such projects should depend upon their own language native tooling.
 
@@ -77,9 +76,23 @@ For example, the name of the branch for a new awesome feature named Awesome Feat
 
 ## [Known|Non]-Issues
 
+- If there are no merges of branches conforming to the above naming scheme, this action will fail with the following output:
+
+        ERROR: No feature, enhancement, fix, bugfix, hotfix, or ops branches detected!
+
+  - When encountering this scenario, and a build is desired, you can simply create a branch with the appropriate naming convention and an empty commit, then merge it. Or use the bump scripts in the '.devops/' directory of the repo for this action.
+
+- Merged branches not conforming to the above naming scheme will simply be ignored.
+  - HINT: This can be useful when you don't want to increment the version.
+    - Align this with build 'on:push:branches:' workflow configuration to avoid unnecessary builds.
+- The version output does not have a 'v' prefix.
+  - If you would like a 'v' prefix to your versions, add it to your logic when using the output from this action. For example:
+
+        echo "The new version is v${{ steps.detect-version.outputs.new-version }}"
+                                 ^ here
+
 - If both 'main' and 'master' branches exist remotely: FAIL
   - This will not be changed.
-- Branches merged not conforming to the above branch naming scheme will result in a failed version detection.
 
 ## Future Enhancements
 
