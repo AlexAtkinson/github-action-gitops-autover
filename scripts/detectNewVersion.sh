@@ -112,15 +112,15 @@ tsCmd='date --utc +%FT%T.%3NZ'
 relative_path="$(dirname "${BASH_SOURCE[0]}")"
 dir="$(realpath "${relative_path}")"
 
-lastVersion=$(/usr/bin/env bash -c "${dir}/scripts/detectPreviousVersion.sh")
+lastVersion=$(/usr/bin/env bash -c "${dir}/detectPreviousVersion.sh")
 echo $lastVersion
-lastVersionMajor=$(/usr/bin/env bash -c "${dir}/scripts/validateSemver.sh -p major $lastVersion")
+lastVersionMajor=$(/usr/bin/env bash -c "${dir}/validateSemver.sh -p major $lastVersion")
 echo $lastVersionMajor
-lastVersionMinor=$(/usr/bin/env bash -c "${dir}/scripts/validateSemver.sh -p minor $lastVersion")
+lastVersionMinor=$(/usr/bin/env bash -c "${dir}/validateSemver.sh -p minor $lastVersion")
 echo $lastVersionMinor
-lastVersionPatch=$(/usr/bin/env bash -c "${dir}/scripts/validateSemver.sh -p patch $lastVersion")
+lastVersionPatch=$(/usr/bin/env bash -c "${dir}/validateSemver.sh -p patch $lastVersion")
 echo $lastVersionPatch
-lastVersionCommitHash=$(/usr/bin/env bash -c "${dir}/scripts/detectPreviousVersion.sh -c")
+lastVersionCommitHash=$(/usr/bin/env bash -c "${dir}/detectPreviousVersion.sh -c")
 echo  $lastVersionCommitHash
 lastCommitHash=$(git rev-parse HEAD)
 echo $lastCommitHash
@@ -162,8 +162,11 @@ esac
 echo $merge_string
 
 git log --pretty=oneline "${lastVersionCommitHash}".."${lastCommitHash}" | awk -v s="$merge_string" -v c="$column" -v f="$field" '$0 ~ s {print $c}'
-git log --pretty=oneline "${lastVersionCommitHash}".."${lastCommitHash}" | awk -v s="$merge_string" -v c="$column" -v f="$field" '$0 ~ s {print $c}' | awk -F'/' '{print $f}' | tr -d "'" 
+echo 165
+git log --pretty=oneline "${lastVersionCommitHash}".."${lastCommitHash}" | awk -v s="$merge_string" -v c="$column" -v f="$field" '$0 ~ s {print $c}' | awk -F'/' '{print $f}' | tr -d "'"
+echo 167
 git log --pretty=oneline "${lastVersionCommitHash}".."${lastCommitHash}" | awk -v s="$merge_string" -v c="$column" -v f="$field" '$0 ~ s {print $c}' | awk -F'/' '{print $f}' | tr -d "'" | grep -i '^enhancement$\|^feature$\|^fix$\|^hotfix$\|^bugfix$\|^ops$'
+echo 169
 # --------------------------------------------------------------------------------------------------
 # Sanity (2/2)
 # --------------------------------------------------------------------------------------------------
