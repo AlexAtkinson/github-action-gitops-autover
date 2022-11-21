@@ -26,6 +26,12 @@ runs:
           cd $GITHUB_WORKSPACE
           git pull --unshallow
       shell: bash
+    - name: Detect Previous Version
+      id: previous-version
+      run: |
+          cd $GITHUB_WORKSPACE
+          echo "previous-version=$(${{ github.action_path }}/scripts/detectPreviousVersion.sh)" | tee $GITHUB_OUTPUT
+      shell: bash
     - name: Detect New Version
       id: new-version
       run: |
@@ -34,13 +40,7 @@ runs:
           [[ "${{ inputs.force-re-evaluate }}" == 'true' ]] && opt='-f'
           new_version="$(${{ github.action_path }}/scripts/detectNewVersion.sh $opt)"
           echo "new-version=$new_version" | tee $GITHUB_OUTPUT
-          [[ "$o" =~ "ERROR" ]] && exit 1
-      shell: bash
-    - name: Detect Previous Version
-      id: previous-version
-      run: |
-          cd $GITHUB_WORKSPACE
-          echo "previous-version=$(${{ github.action_path }}/scripts/detectPreviousVersion.sh)" | tee $GITHUB_OUTPUT
+          [[ "$new_version" =~ "ERROR" ]] && exit 1
       shell: bash
 
 # See github contexts for more like github.action_path.
