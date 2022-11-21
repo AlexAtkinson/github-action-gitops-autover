@@ -21,12 +21,14 @@ runs:
   steps:
     - uses: actions/checkout@v3
     - id: new-version
+      working-directory: $GITHUB_WORKSPACE
       run: |
           opt=''
           [[ "${{ inputs.force-re-evaluate }}" == 'true' ]] && opt='-f'
           echo "new-version=$(${{ github.action_path }}/scripts/detectNewVersion.sh $opt)" | tee $GITHUB_OUTPUT
       shell: bash
     - id: previous-version
+      working-directory: $GITHUB_WORKSPACE
       run: |
           echo "previous-version=$(${{ github.action_path }}/scripts/detectPreviousVersion.sh)" | tee $GITHUB_OUTPUT
       shell: bash
