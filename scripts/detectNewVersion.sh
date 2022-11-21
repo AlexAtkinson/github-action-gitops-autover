@@ -113,12 +113,19 @@ relative_path="$(dirname "${BASH_SOURCE[0]}")"
 dir="$(realpath "${relative_path}")"
 
 lastVersion=$(/usr/bin/env bash -c "${dir}/detectPreviousVersion.sh")
+echo $lastVersion
 lastVersionMajor=$(/usr/bin/env bash -c "${dir}/validateSemver.sh -p major $lastVersion")
+echo $lastVersionMajor
 lastVersionMinor=$(/usr/bin/env bash -c "${dir}/validateSemver.sh -p minor $lastVersion")
+echo $lastVersionMinor
 lastVersionPatch=$(/usr/bin/env bash -c "${dir}/validateSemver.sh -p patch $lastVersion")
+echo $lastVersionPatch
 lastVersionCommitHash=$(/usr/bin/env bash -c "${dir}/detectPreviousVersion.sh -c")
+echo  $lastVersionCommitHash
 lastCommitHash=$(git rev-parse HEAD)
+echo $lastCommitHash
 firstCommitHash=$(git rev-list --max-parents=0 HEAD)
+echo $firstCommitHash
 
 ci_name=$("${dir}/detect-ci.sh")
 origin=$(git config --get remote.origin.url)
@@ -188,7 +195,7 @@ if [[ -n $arg_f ]]; then
   true
 else
   if [[ -z $count_feature && -z $count_enhancement && -z $count_fix && -z $count_bugfix && -z $count_hotfix && -z $count_ops ]]; then
-    echo -e "[$(${tsCmd})] \e[01;31mERROR\e[00m: No feature, enhancement, fix, bugfix, hotfix, or ops branches detected!"
+    echo -e "\e[01;31mERROR\e[00m: No feature, enhancement, fix, bugfix, hotfix, or ops branches detected!"
     if [[ "$sourced" == 0 ]]; then
       exit 1
     else
