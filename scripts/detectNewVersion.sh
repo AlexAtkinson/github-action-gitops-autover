@@ -164,7 +164,6 @@ if [[ -n $arg_e ]]; then
 fi
 
 git log --pretty=oneline "$lastVersionCommitHash".."$lastCommitHash" | grep '+semver' | grep -q 'major\|breaking' && incrementMajor='true'
-echo "major?: $incrementMajor"
 
 if [[ $incrementMajor != 'true' ]]; then
   IFS=$'\r\n'
