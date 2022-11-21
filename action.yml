@@ -24,11 +24,15 @@ runs:
       run: |
           opt=''
           [[ "${{ inputs.force-re-evaluate }}" == 'true' ]] && opt='-f'
-          echo "new-version=$(${{ github.action_path }}/scripts/detectNewVersion.sh $opt)" >> $GITHUB_OUTPUT
+          echo "new-version=$(${{ github.action_path }}/scripts/detectNewVersion.sh $opt)" | tee $GITHUB_OUTPUT
       shell: bash
     - id: previous-version
       run: |
-          echo "previous-version=$(${{ github.action_path }}/scripts/detectPreviousVersion.sh)" >> $GITHUB_OUTPUT
+          echo "previous-version=$(${{ github.action_path }}/scripts/detectPreviousVersion.sh)" | tee $GITHUB_OUTPUT
+      shell: bash
+    - id: ci-name
+      run: |
+          echo "ci-name=$(${{ github.action_path }}/scripts/detect-ci.sh)" | tee $GITHUB_OUTPUT
       shell: bash
 
 # See github contexts for more like github.action_path.
