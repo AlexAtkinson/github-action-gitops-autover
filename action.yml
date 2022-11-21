@@ -30,3 +30,6 @@ runs:
       run: |
           echo "previous-version=$(${{ github.action_path }}/scripts/detectPreviousVersion.sh)" >> $GITHUB_OUTPUT
       shell: bash
+
+# See github contexts for more like github.action_path.
+# REF: https://docs.github.com/en/actions/learn-github-actions/contexts#github-context

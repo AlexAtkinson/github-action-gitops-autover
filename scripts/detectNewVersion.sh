@@ -120,11 +120,14 @@ lastVersionCommitHash=$(/usr/bin/env bash -c "${dir}/detectPreviousVersion.sh -c
 lastCommitHash=$(git rev-parse HEAD)
 firstCommitHash=$(git rev-list --max-parents=0 HEAD)
 
-
+ci_name=$(./scripts/detect-ci.sh)
 origin=$(git config --get remote.origin.url)
-[[ "$origin" =~ "git@github.com"* ]] && origin_host=github
-[[ "$origin" =~ "git@gitlab.com"* ]] && origin_host=gitlab
-[[ "$origin" =~ "git@bitbucket.com"* ]] && origin_host=bitbucket
+#origin=${ci_name:-origin}
+# Executes in ANY CI so long as repo origin is one of the following.
+# Uncomment origin override to restrict this.
+[[ "$origin" =~ "git@github.com"* || "$ci_name" == "github" ]] && origin_host=github
+[[ "$origin" =~ "git@gitlab.com"* || "$ci_name" == "gitlab" ]] && origin_host=gitlab
+[[ "$origin" =~ "git@bitbucket.com"* || "$ci_name" == "bitbucket" ]] && origin_host=bitbucket
 
 case "$origin_host" in
   github)
@@ -147,6 +150,7 @@ case "$origin_host" in
     exit 1
   ;;
 esac
+
 
 # --------------------------------------------------------------------------------------------------
 # Sanity (2/2)
