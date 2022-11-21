@@ -120,8 +120,9 @@ lastVersionCommitHash=$(/usr/bin/env bash -c "${dir}/detectPreviousVersion.sh -c
 lastCommitHash=$(git rev-parse HEAD)
 firstCommitHash=$(git rev-list --max-parents=0 HEAD)
 
-ci_name=$(./scripts/detect-ci.sh)
+ci_name=$("${dir}/detect-ci.sh")
 origin=$(git config --get remote.origin.url)
+
 #origin=${ci_name:-origin}
 # Executes in ANY CI so long as repo origin is one of the following.
 # Uncomment origin override to restrict this.
