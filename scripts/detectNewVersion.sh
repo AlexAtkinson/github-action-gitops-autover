@@ -163,30 +163,34 @@ if [[ -n $arg_e ]]; then
   fi
 fi
 
-IFS=$'\r\n'
-if [[ -n $arg_f ]]; then
-  for i in $(git log --pretty=oneline "${firstCommitHash}".."${lastCommitHash}" | awk -v s="$merge_string" -v c="$column" '$0 ~ s {print $c}' | awk -v f="$field" -F'/' '{print $f}' | tr -d "'" | grep -i '^enhancement$\|^feature$\|^fix$\|^hotfix$\|^bugfix$\|^ops$' | awk -F '\r' '{print $1}' | sort | uniq -c | sort -nr) ; do
-    varname=$(echo "$i" | awk '{print $2}')
-    varname=${varname,,}
-    value=$(echo "$i" | awk '{print $1}')
-    value=${value,,}
-    declare count_"$varname"="$value"
-  done
-else
-  for i in $(git log --pretty=oneline "${lastVersionCommitHash}".."${lastCommitHash}" | awk -v s="$merge_string" -v c="$column" '$0 ~ s {print $c}' | awk -v f="$field" -F'/' '{print $f}' | tr -d "'" | grep -i '^enhancement$\|^feature$\|^fix$\|^hotfix$\|^bugfix$\|^ops$' | awk -F '\r' '{print $1}' | sort | uniq -c | sort -nr) ; do
-    varname=$(echo "$i" | awk '{print $2}')
-    varname=${varname,,}
-    value=$(echo "$i" | awk '{print $1}')
-    value=${value,,}
-    declare count_"$varname"="$value"
-  done
+git log --pretty=oneline "$lastVersionCommitHash".."$lastCommitHash" | grep '+semver' | grep -q 'major\|breaking' && incrementMajor='true'
+
+if [[ $incrementMajor != 'true' ]]; then
+  IFS=$'\r\n'
+  if [[ -n $arg_f ]]; then
+    for i in $(git log --pretty=oneline "${firstCommitHash}".."${lastCommitHash}" | awk -v s="$merge_string" -v c="$column" '$0 ~ s {print $c}' | awk -v f="$field" -F'/' '{print $f}' | tr -d "'" | grep -i '^enhancement$\|^feature$\|^fix$\|^hotfix$\|^bugfix$\|^ops$' | awk -F '\r' '{print $1}' | sort | uniq -c | sort -nr) ; do
+      varname=$(echo "$i" | awk '{print $2}')
+      varname=${varname,,}
+      value=$(echo "$i" | awk '{print $1}')
+      value=${value,,}
+      declare count_"$varname"="$value"
+    done
+  else
+    for i in $(git log --pretty=oneline "${lastVersionCommitHash}".."${lastCommitHash}" | awk -v s="$merge_string" -v c="$column" '$0 ~ s {print $c}' | awk -v f="$field" -F'/' '{print $f}' | tr -d "'" | grep -i '^enhancement$\|^feature$\|^fix$\|^hotfix$\|^bugfix$\|^ops$' | awk -F '\r' '{print $1}' | sort | uniq -c | sort -nr) ; do
+      varname=$(echo "$i" | awk '{print $2}')
+      varname=${varname,,}
+      value=$(echo "$i" | awk '{print $1}')
+      value=${value,,}
+      declare count_"$varname"="$value"
+    done
+  fi
+  IFS=$IFS_BAK
 fi
-IFS=$IFS_BAK
 
 if [[ -n $arg_f ]]; then
   true
 else
-  if [[ -z $count_feature && -z $count_enhancement && -z $count_fix && -z $count_bugfix && -z $count_hotfix && -z $count_ops ]]; then
+  if [[ -z $incrementMajor && -z $count_feature && -z $count_enhancement && -z $count_fix && -z $count_bugfix && -z $count_hotfix && -z $count_ops ]]; then
     echo -e "\e[01;31mERROR\e[00m: No feature, enhancement, fix, bugfix, hotfix, or ops branches detected!"
     if [[ "$sourced" == 0 ]]; then
       exit 1
@@ -199,8 +203,6 @@ fi
 # --------------------------------------------------------------------------------------------------
 # Main Operations
 # --------------------------------------------------------------------------------------------------
-
-git log --pretty=oneline "$lastVersionCommitHash".."$lastCommitHash" | grep '+semver' | grep -q 'major\|breaking' && incrementMajor='true'
 
 if [[ $incrementMajor == 'true' ]]; then
   newVersionMajor=$((lastVersionMajor + 1))
