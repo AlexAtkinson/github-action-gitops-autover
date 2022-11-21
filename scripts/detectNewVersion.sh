@@ -113,19 +113,12 @@ relative_path="$(dirname "${BASH_SOURCE[0]}")"
 dir="$(realpath "${relative_path}")"
 
 lastVersion=$(/usr/bin/env bash -c "${dir}/detectPreviousVersion.sh")
-echo $lastVersion
 lastVersionMajor=$(/usr/bin/env bash -c "${dir}/validateSemver.sh -p major $lastVersion")
-echo $lastVersionMajor
 lastVersionMinor=$(/usr/bin/env bash -c "${dir}/validateSemver.sh -p minor $lastVersion")
-echo $lastVersionMinor
 lastVersionPatch=$(/usr/bin/env bash -c "${dir}/validateSemver.sh -p patch $lastVersion")
-echo $lastVersionPatch
 lastVersionCommitHash=$(/usr/bin/env bash -c "${dir}/detectPreviousVersion.sh -c")
-echo  $lastVersionCommitHash
 lastCommitHash=$(git rev-parse HEAD)
-echo $lastCommitHash
 firstCommitHash=$(git rev-list --max-parents=0 HEAD)
-echo $firstCommitHash
 
 ci_name=$("${dir}/detect-ci.sh")
 origin=$(git config --get remote.origin.url)
@@ -159,15 +152,8 @@ case "$origin_host" in
   ;;
 esac
 
-echo $merge_string
-
-echo "c: $column"
-echo "f: $field"
-git log --pretty=oneline "${lastVersionCommitHash}".."${lastCommitHash}" | awk -v s="$merge_string" -v c="$column" '$0 ~ s {print $c}'
 echo 165
-git log --pretty=oneline "${lastVersionCommitHash}".."${lastCommitHash}" | awk -v s="$merge_string" -v c="$column" '$0 ~ s {print $c}' | awk -v f="$field" -F'/' '{print $f}' | tr -d "'"
-echo 167
-git log --pretty=oneline "${lastVersionCommitHash}".."${lastCommitHash}" | awk -v s="$merge_string" -v c="$column" '$0 ~ s {print $c}' | awk -v f="$field" -F'/' '{print $f}' | tr -d "'" | grep -i '^enhancement$\|^feature$\|^fix$\|^hotfix$\|^bugfix$\|^ops$'
+git log --pretty=oneline "${lastVersionCommitHash}".."${lastCommitHash}" | awk -v s="$merge_string" -v c="$column" -v '$0 ~ s {print $c}' | awk f="$field" -F'/' '{print $f}' | tr -d "'" | grep -i '^enhancement$\|^feature$\|^fix$\|^hotfix$\|^bugfix$\|^ops$' | awk -F '\r' '{print $1}' | sort | uniq -c | sort -nr
 echo 169
 # --------------------------------------------------------------------------------------------------
 # Sanity (2/2)
@@ -191,6 +177,7 @@ if [[ -n $arg_f ]]; then
   done
 else
   for i in $(git log --pretty=oneline "${lastVersionCommitHash}".."${lastCommitHash}" | awk -v s="$merge_string" -v c="$column" -v '$0 ~ s {print $c}' | awk f="$field" -F'/' '{print $f}' | tr -d "'" | grep -i '^enhancement$\|^feature$\|^fix$\|^hotfix$\|^bugfix$\|^ops$' | awk -F '\r' '{print $1}' | sort | uniq -c | sort -nr) ; do
+    echo "hello: $i"
     varname=$(echo "$i" | awk '{print $2}')
     varname=${varname,,}
     value=$(echo "$i" | awk '{print $1}')
@@ -199,6 +186,14 @@ else
   done
 fi
 IFS=$IFS_BAK
+
+
+echo "a $count_enhancement"
+echo "b $count_feature"
+echo "c $count_fix"
+echo "d $count_hotfix"
+echo "e $count_bugfix"
+echo "f $count_ops"
 
 if [[ -n $arg_f ]]; then
   true
