@@ -32,7 +32,9 @@ runs:
           cd $GITHUB_WORKSPACE
           opt=''
           [[ "${{ inputs.force-re-evaluate }}" == 'true' ]] && opt='-f'
-          echo "new-version=$(${{ github.action_path }}/scripts/detectNewVersion.sh $opt)" | tee $GITHUB_OUTPUT
+          new_version="$(${{ github.action_path }}/scripts/detectNewVersion.sh $opt)"
+          echo "new-version=$new_version" | tee $GITHUB_OUTPUT
+          [[ "$o" =~ "ERROR" ]] && exit 1
       shell: bash
     - name: Detect Previous Version
       id: previous-version

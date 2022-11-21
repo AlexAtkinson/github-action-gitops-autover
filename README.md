@@ -1,8 +1,35 @@
 # Github Action - AutoVer
 
-Automatically determine the [semantic version](https://semver.org/) based on merge history (not commit messages), with MINIMAL discipline dependencies.
+Language agnostic method of automatically determining the [semantic version](https://semver.org/) for a product based on merge history (not commit messages), with MINIMAL discipline dependencies.
 
 This is accomplished by counting the merges for 'enhancement/.\*', 'feature/.\*', 'fix/.\*', 'bugfix/.\*', 'hotfix/.\*', 'ops/.\*' branches into either the 'main' or 'master' branch.
+
+## Usage
+
+This action can be used in ANY
+
+```yaml
+name: gitops-autover
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  use-action:
+    name: Verify GitOps AutoVer Action
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run GitOps Automatic Versioning Action
+        id: gitops-autover
+        uses: AlexAtkinson/github-action-gitops-autover@0.1.0
+      - name: Verify Outputs
+        run: |
+          echo "new-version: ${{ steps.gitops-autover.outputs.new-version }}"
+          echo "previous-version: ${{ steps.gitops-autover.outputs.previous-version }}"
+```
 
 ## Appropriate Use Cases
 
@@ -93,6 +120,8 @@ For example, the name of the branch for a new awesome feature named Awesome Feat
 
 - If both 'main' and 'master' branches exist remotely: FAIL
   - This will not be changed.
+
+- Squash merging must be disabled. This is required to populate the git log with the commit messages issued from the git provider.
 
 ## Future Enhancements
 
