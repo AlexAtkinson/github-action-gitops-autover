@@ -9,6 +9,7 @@ This is accomplished by counting the merges for 'enhancement/.\*', 'feature/.\*'
 ## Usage
 
 Setup and implementation of this action is straight forward.
+
 ### Repository Setup
 
 1. Disable squash merging in the repository settings.
@@ -23,40 +24,38 @@ Setup and implementation of this action is straight forward.
 ### Outputs
 
 <dl>
-<dt>new-version: [string]</dt>
-<dd>The newly detected version.</dd>
-<dt>previous-version: [string]</dt>
-<dd>The previous version.</dd>
+  <dt>new-version: [string]</dt>
+    <dd>The newly detected version.</dd>
+  <dt>previous-version: [string]</dt>
+    <dd>The previous version.</dd>
 </dl>
 
 ### Example
 
 This is a valid workflow utilizing this action.
 
-```yaml
-name: gitops-autover
+    name: gitops-autover
 
-on:
-  push:
-    branches:
-      - main
+    on:
+    push:
+        branches:
+        - main
 
-jobs:
-  use-action:
-    name: Verify GitOps AutoVer Action
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Run GitOps Automatic Versioning Action
-        id: gitops-autover
-        uses: AlexAtkinson/github-action-gitops-autover@0.1.0
-      - name: Verify Outputs
-        run: |
-          NEW_VERSION=${{ steps.gitops-autover.outputs.new-version }}
-          echo "new-version: $NEW_VERSION"
-          PREVIOUS_VERSION=${{ steps.gitops-autover.outputs.previous-version }}
-          echo "previous-version: $PREVIOUS_VERSION"
-```
+    jobs:
+    use-action:
+        name: Verify GitOps AutoVer Action
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@v3
+        - name: Run GitOps Automatic Versioning Action
+            id: gitops-autover
+            uses: AlexAtkinson/github-action-gitops-autover@0.1.0
+        - name: Verify Outputs
+            run: |
+            NEW_VERSION=${{ steps.gitops-autover.outputs.new-version }}
+            echo "new-version: $NEW_VERSION"
+            PREVIOUS_VERSION=${{ steps.gitops-autover.outputs.previous-version }}
+            echo "previous-version: $PREVIOUS_VERSION"
 
 ## Appropriate Use Cases
 
