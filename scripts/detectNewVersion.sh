@@ -161,11 +161,13 @@ esac
 
 echo $merge_string
 
-git log --pretty=oneline "${lastVersionCommitHash}".."${lastCommitHash}" | awk -v s="$merge_string" -v c="$column" -v f="$field" '$0 ~ s {print $c}'
+echo "c: $column"
+echo "f: $field"
+git log --pretty=oneline "${lastVersionCommitHash}".."${lastCommitHash}" | awk -v s="$merge_string" -v c="$column" '$0 ~ s {print $c}'
 echo 165
-git log --pretty=oneline "${lastVersionCommitHash}".."${lastCommitHash}" | awk -v s="$merge_string" -v c="$column" -v f="$field" '$0 ~ s {print $c}' | awk -F'/' '{print $f}' | tr -d "'"
+git log --pretty=oneline "${lastVersionCommitHash}".."${lastCommitHash}" | awk -v s="$merge_string" -v c="$column" '$0 ~ s {print $c}' | awk -v f="$field" -F'/' '{print $f}' | tr -d "'"
 echo 167
-git log --pretty=oneline "${lastVersionCommitHash}".."${lastCommitHash}" | awk -v s="$merge_string" -v c="$column" -v f="$field" '$0 ~ s {print $c}' | awk -F'/' '{print $f}' | tr -d "'" | grep -i '^enhancement$\|^feature$\|^fix$\|^hotfix$\|^bugfix$\|^ops$'
+git log --pretty=oneline "${lastVersionCommitHash}".."${lastCommitHash}" | awk -v s="$merge_string" -v c="$column" '$0 ~ s {print $c}' | awk -v f="$field" -F'/' '{print $f}' | tr -d "'" | grep -i '^enhancement$\|^feature$\|^fix$\|^hotfix$\|^bugfix$\|^ops$'
 echo 169
 # --------------------------------------------------------------------------------------------------
 # Sanity (2/2)
@@ -180,7 +182,7 @@ fi
 
 IFS=$'\r\n'
 if [[ -n $arg_f ]]; then
-  for i in $(git log --pretty=oneline "${firstCommitHash}".."${lastCommitHash}" | awk -v s="$merge_string" -v c="$column" -v f="$field" '$0 ~ s {print $c}' | awk -F'/' '{print $f}' | tr -d "'" | grep -i '^enhancement$\|^feature$\|^fix$\|^hotfix$\|^bugfix$\|^ops$' | awk -F '\r' '{print $1}' | sort | uniq -c | sort -nr) ; do
+  for i in $(git log --pretty=oneline "${firstCommitHash}".."${lastCommitHash}" | awk -v s="$merge_string" -v c="$column" '$0 ~ s {print $c}' | awk -v f="$field" -F'/' '{print $f}' | tr -d "'" | grep -i '^enhancement$\|^feature$\|^fix$\|^hotfix$\|^bugfix$\|^ops$' | awk -F '\r' '{print $1}' | sort | uniq -c | sort -nr) ; do
     varname=$(echo "$i" | awk '{print $2}')
     varname=${varname,,}
     value=$(echo "$i" | awk '{print $1}')
