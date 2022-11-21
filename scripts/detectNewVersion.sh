@@ -159,7 +159,11 @@ case "$origin_host" in
   ;;
 esac
 
+echo $merge_string
 
+git log --pretty=oneline "${lastVersionCommitHash}".."${lastCommitHash}" | awk -v s="$merge_string" -v c="$column" -v f="$field" '$0 ~ s {print $c}'
+git log --pretty=oneline "${lastVersionCommitHash}".."${lastCommitHash}" | awk -v s="$merge_string" -v c="$column" -v f="$field" '$0 ~ s {print $c}' | awk -F'/' '{print $f}' | tr -d "'" 
+git log --pretty=oneline "${lastVersionCommitHash}".."${lastCommitHash}" | awk -v s="$merge_string" -v c="$column" -v f="$field" '$0 ~ s {print $c}' | awk -F'/' '{print $f}' | tr -d "'" | grep -i '^enhancement$\|^feature$\|^fix$\|^hotfix$\|^bugfix$\|^ops$'
 # --------------------------------------------------------------------------------------------------
 # Sanity (2/2)
 # --------------------------------------------------------------------------------------------------
