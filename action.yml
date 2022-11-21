@@ -25,6 +25,7 @@ runs:
       run: |
           cd $GITHUB_WORKSPACE
           git pull --unshallow
+      shell: bash
     - name: Detect New Version
       id: new-version
       run: |
