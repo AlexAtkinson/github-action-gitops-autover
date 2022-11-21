@@ -1,4 +1,4 @@
-# Github Action - AutoVer
+# Introduction
 
 Language/content agnostic method of automatically determining the [semantic version](https://semver.org/) for a product based on merge history with MINIMAL discipline dependencies.
 
