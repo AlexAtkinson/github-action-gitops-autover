@@ -19,15 +19,22 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - uses: actions/checkout@v3
-    - id: new-version
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Ensure full commit history
+      run: |
+          cd $GITHUB_WORKSPACE
+          git pull --unshallow
+    - name: Detect New Version
+      id: new-version
       run: |
           cd $GITHUB_WORKSPACE
           opt=''
           [[ "${{ inputs.force-re-evaluate }}" == 'true' ]] && opt='-f'
           echo "new-version=$(${{ github.action_path }}/scripts/detectNewVersion.sh $opt)" | tee $GITHUB_OUTPUT
       shell: bash
-    - id: previous-version
+    - name: Detect Previous Version
+      id: previous-version
       run: |
           cd $GITHUB_WORKSPACE
           echo "previous-version=$(${{ github.action_path }}/scripts/detectPreviousVersion.sh)" | tee $GITHUB_OUTPUT
