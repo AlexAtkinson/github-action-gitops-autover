@@ -1,12 +1,37 @@
 # Github Action - AutoVer
 
-Language agnostic method of automatically determining the [semantic version](https://semver.org/) for a product based on merge history (not commit messages), with MINIMAL discipline dependencies.
+Language/content agnostic method of automatically determining the [semantic version](https://semver.org/) for a product based on merge history with MINIMAL discipline dependencies.
 
-This is accomplished by counting the merges for 'enhancement/.\*', 'feature/.\*', 'fix/.\*', 'bugfix/.\*', 'hotfix/.\*', 'ops/.\*' branches into either the 'main' or 'master' branch.
+This is accomplished by counting the merges for 'enhancement/.\*', 'feature/.\*', 'fix/.\*', 'bugfix/.\*', 'hotfix/.\*', 'ops/.\*' branches into either the 'main' or 'master' branch. Folks familiar with Scrum/SAFe or GitFlow/.*Flow branching strategies will recognize this scheme.
+
+> NOTE: While this is a production hardened versioning kit, it's implementation as a GH action took a bit of fussing. Please test it and provide any feedback by opening an issue.
 
 ## Usage
 
-This action can be used in ANY
+Setup and implementation of this action is straight forward.
+### Repository Setup
+
+1. Disable squash merging in the repository settings.
+
+### Workflow Setup
+
+1. Ensure your action executes a checkout step prior to using this action.
+2. Use the outputs from this action as desired. For example, you might use it to update the version of an npm package:
+
+        npm version $NEW_VERSION
+
+### Outputs
+
+<dl>
+<dt>new-version: [string]</dt>
+<dd>The newly detected version.</dd>
+<dt>previous-version: [string]</dt>
+<dd>The previous version.</dd>
+</dl>
+
+### Example
+
+This is a valid workflow utilizing this action.
 
 ```yaml
 name: gitops-autover
@@ -27,8 +52,10 @@ jobs:
         uses: AlexAtkinson/github-action-gitops-autover@0.1.0
       - name: Verify Outputs
         run: |
-          echo "new-version: ${{ steps.gitops-autover.outputs.new-version }}"
-          echo "previous-version: ${{ steps.gitops-autover.outputs.previous-version }}"
+          NEW_VERSION=${{ steps.gitops-autover.outputs.new-version }}
+          echo "new-version: $NEW_VERSION"
+          PREVIOUS_VERSION=${{ steps.gitops-autover.outputs.previous-version }}
+          echo "previous-version: $PREVIOUS_VERSION"
 ```
 
 ## Appropriate Use Cases

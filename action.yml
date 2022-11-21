@@ -40,7 +40,7 @@ runs:
           [[ "${{ inputs.force-re-evaluate }}" == 'true' ]] && opt='-f'
           new_version="$(${{ github.action_path }}/scripts/detectNewVersion.sh $opt)"
           echo "new-version=$new_version" | tee $GITHUB_OUTPUT
-          [[ "$new_version" =~ "ERROR" ]] && exit 1
+          [[ "$new_version" =~ "ERROR" ]] && exit 1 || true
       shell: bash
 
 # See github contexts for more like github.action_path.
