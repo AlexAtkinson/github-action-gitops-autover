@@ -153,7 +153,7 @@ case "$origin_host" in
 esac
 
 echo 165
-git log --pretty=oneline "${lastVersionCommitHash}".."${lastCommitHash}" | awk -v s="$merge_string" -v c="$column" -v '$0 ~ s {print $c}' | awk f="$field" -F'/' '{print $f}' | tr -d "'" | grep -i '^enhancement$\|^feature$\|^fix$\|^hotfix$\|^bugfix$\|^ops$' | awk -F '\r' '{print $1}' | sort | uniq -c | sort -nr
+git log --pretty=oneline "${lastVersionCommitHash}".."${lastCommitHash}" | awk -v s="$merge_string" -v c="$column" '$0 ~ s {print $c}' | awk -v f="$field" -F'/' '{print $f}' | tr -d "'" | grep -i '^enhancement$\|^feature$\|^fix$\|^hotfix$\|^bugfix$\|^ops$' | awk -F '\r' '{print $1}' | sort | uniq -c | sort -nr
 echo 169
 # --------------------------------------------------------------------------------------------------
 # Sanity (2/2)
@@ -176,7 +176,7 @@ if [[ -n $arg_f ]]; then
     declare count_"$varname"="$value"
   done
 else
-  for i in $(git log --pretty=oneline "${lastVersionCommitHash}".."${lastCommitHash}" | awk -v s="$merge_string" -v c="$column" -v '$0 ~ s {print $c}' | awk f="$field" -F'/' '{print $f}' | tr -d "'" | grep -i '^enhancement$\|^feature$\|^fix$\|^hotfix$\|^bugfix$\|^ops$' | awk -F '\r' '{print $1}' | sort | uniq -c | sort -nr) ; do
+  for i in $(git log --pretty=oneline "${lastVersionCommitHash}".."${lastCommitHash}" | awk -v s="$merge_string" -v c="$column" '$0 ~ s {print $c}' | awk -v f="$field" -F'/' '{print $f}' | tr -d "'" | grep -i '^enhancement$\|^feature$\|^fix$\|^hotfix$\|^bugfix$\|^ops$' | awk -F '\r' '{print $1}' | sort | uniq -c | sort -nr) ; do
     echo "hello: $i"
     varname=$(echo "$i" | awk '{print $2}')
     varname=${varname,,}
