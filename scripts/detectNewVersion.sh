@@ -192,6 +192,7 @@ if [[ -n $arg_f ]]; then
 else
   if [[ -z $incrementMajor && -z $count_feature && -z $count_enhancement && -z $count_fix && -z $count_bugfix && -z $count_hotfix && -z $count_ops ]]; then
     echo -e "\e[01;31mERROR\e[00m: No feature, enhancement, fix, bugfix, hotfix, or ops branches detected!"
+    exit 1 # For GH Actions
     if [[ "$sourced" == 0 ]]; then
       exit 1
     else
