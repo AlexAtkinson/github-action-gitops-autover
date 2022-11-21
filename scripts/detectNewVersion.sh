@@ -112,15 +112,15 @@ tsCmd='date --utc +%FT%T.%3NZ'
 relative_path="$(dirname "${BASH_SOURCE[0]}")"
 dir="$(realpath "${relative_path}")"
 
-lastVersion=$(/usr/bin/env bash -c "${dir}/detectPreviousVersion.sh")
+lastVersion=$(/usr/bin/env bash -c "${dir}/scripts/detectPreviousVersion.sh")
 echo $lastVersion
-lastVersionMajor=$(/usr/bin/env bash -c "${dir}/validateSemver.sh -p major $lastVersion")
+lastVersionMajor=$(/usr/bin/env bash -c "${dir}/scripts/validateSemver.sh -p major $lastVersion")
 echo $lastVersionMajor
-lastVersionMinor=$(/usr/bin/env bash -c "${dir}/validateSemver.sh -p minor $lastVersion")
+lastVersionMinor=$(/usr/bin/env bash -c "${dir}/scripts/validateSemver.sh -p minor $lastVersion")
 echo $lastVersionMinor
-lastVersionPatch=$(/usr/bin/env bash -c "${dir}/validateSemver.sh -p patch $lastVersion")
+lastVersionPatch=$(/usr/bin/env bash -c "${dir}/scripts/validateSemver.sh -p patch $lastVersion")
 echo $lastVersionPatch
-lastVersionCommitHash=$(/usr/bin/env bash -c "${dir}/detectPreviousVersion.sh -c")
+lastVersionCommitHash=$(/usr/bin/env bash -c "${dir}/scripts/detectPreviousVersion.sh -c")
 echo  $lastVersionCommitHash
 lastCommitHash=$(git rev-parse HEAD)
 echo $lastCommitHash
