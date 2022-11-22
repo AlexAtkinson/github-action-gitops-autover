@@ -4,35 +4,41 @@ Language/content agnostic method of automatically determining the [semantic vers
 
 This is accomplished by counting the merges for 'enhancement/.\*', 'feature/.\*', 'fix/.\*', 'bugfix/.\*', 'hotfix/.\*', 'ops/.\*' branches into either the 'main' or 'master' branch. Folks familiar with Scrum/SAFe or GitFlow/.*Flow branching strategies will recognize this scheme.
 
+**Yes**, this can be implemented in repos that previously used different version increment methods.
+
 > NOTE: While this is a production hardened versioning kit, it's implementation as a GH action took a bit of fussing. Please test it and provide any feedback by opening an issue.
 
 ## Usage
 
 ### Setup
-<!-- markdownlint-disable MD033 -->
+
 <dl>
   <dt>Repository Setup</dt>
     <dd>1. Disable squash merging in the repository settings.</dd>
-
+    <dd>?. If you have a previously established version for the repo, ensure it's tagged like: 'MAJOR.MINOR.PATCH'.<BR>
+    For example, if you have a tag like 'v1.2.3', you will want to add a tag like '1.2.3' to that commit as well, which might look like:</dd>
+    <dd><pre>
+git checkout v1.2.3
+git tag 1.2.3
+git push --tags</pre></dd>
   <dt>Workflow Setup</dt>
     <dd>2. Ensure your action executes a checkout step prior to using this action.</dd>
     <dd>3. Use the outputs from this action as desired. For example, you might use it to update the version of an npm package:</dd>
-    <dd><pre>npm version $NEW_VERSION</pre></dd>
+    <dd><pre>
+npm version $NEW_VERSION</pre></dd>
+    <dd>4. Tag the repo with the new version at some point in the workflow.
   <dt>Team Setup</dt>
-    <dd>4. Ensure the iteration team adheres to the branch naming scheme defined below.</dd>
+    <dd>5. Ensure the iteration team adheres to the branch naming scheme defined below.</dd>
 </dl>
-<!-- markdownlint-enable MD033 -->
 
 ### Outputs
 
-<!-- markdownlint-disable MD033 -->
 <dl>
   <dt>new-version: [string]</dt>
     <dd>The newly detected version.</dd>
   <dt>previous-version: [string]</dt>
     <dd>The previous version.</dd>
 </dl>
-<!-- markdownlint-enable MD033 -->
 
 ### Example GH Action Workflow
 
@@ -178,3 +184,4 @@ PR's welcome...
 - Specifying custom branch names to indicate MINOR and PATCH versions.
 - Subdirectory specific versioning.
 - Full GH Actions Workflow Example, including tagging and GH release.
+- CAN'T DO: unshallow from last version tag to latest commit to... Seems a limitation of (git at first glance).
