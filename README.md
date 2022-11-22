@@ -8,29 +8,33 @@ This is accomplished by counting the merges for 'enhancement/.\*', 'feature/.\*'
 
 ## Usage
 
-Setup and implementation of this action is straight forward.
+### Setup
+<!-- markdownlint-disable MD033 -->
+<dl>
+  <dt>Repository Setup</dt>
+    <dd>1. Disable squash merging in the repository settings.</dd>
 
-### Repository Setup
-
-1. Disable squash merging in the repository settings.
-
-### Workflow Setup
-
-1. Ensure your action executes a checkout step prior to using this action.
-2. Use the outputs from this action as desired. For example, you might use it to update the version of an npm package:
-
-        npm version $NEW_VERSION
+  <dt>Workflow Setup</dt>
+    <dd>2. Ensure your action executes a checkout step prior to using this action.</dd>
+    <dd>3. Use the outputs from this action as desired. For example, you might use it to update the version of an npm package:</dd>
+    <dd><pre>npm version $NEW_VERSION</pre></dd>
+  <dt>Team Setup</dt>
+    <dd>4. Ensure the iteration team adheres to the branch naming scheme defined below.</dd>
+</dl>
+<!-- markdownlint-enable MD033 -->
 
 ### Outputs
 
+<!-- markdownlint-disable MD033 -->
 <dl>
   <dt>new-version: [string]</dt>
     <dd>The newly detected version.</dd>
   <dt>previous-version: [string]</dt>
     <dd>The previous version.</dd>
 </dl>
+<!-- markdownlint-enable MD033 -->
 
-### Example
+### Example GH Action Workflow
 
 This is a valid workflow utilizing this action.
 
@@ -56,6 +60,22 @@ This is a valid workflow utilizing this action.
             echo "new-version: $NEW_VERSION"
             PREVIOUS_VERSION=${{ steps.gitops-autover.outputs.previous-version }}
             echo "previous-version: $PREVIOUS_VERSION"
+
+
+## Discipline Dependency
+
+This action depends _only_ on the following _branch naming scheme_ being observed.
+
+| Branch Name    | Increment | Description                            |
+| -------------  | --------- | -------------------------------------- |
+| feature/.*     | Minor     | Product features.                      |
+| enhancement/.* | Minor     | Product enhancements.                  |
+| **fix/.***     | Patch     | Product fixes                          |
+| bugfix/.*      | Patch     | You should use fix.                    |
+| hotfix/.*      | Patch     | Are you from the past?                 |
+| ops/.*         | Patch     | Enables ops changes to trigger builds. |
+
+For example, the name of the branch for a new awesome feature named Awesome Feature, might be: 'feature/awesome_feature'.
 
 ## Appropriate Use Cases
 
@@ -111,21 +131,6 @@ For those interested, here's some pseudo code:
         MAJOR = lastMajor
         MINOR = lastMinor
         PATCH = lastPatch + count of merged branches
-
-## Discipline Dependencies
-
-This action depends only on the following _branch naming scheme_ being observed.
-
-| Branch Name    | Increment | Description                            |
-| -------------  | --------- | -------------------------------------- |
-| feature/.*     | Minor     | Product features.                      |
-| enhancement/.* | Minor     | Product enhancements.                  |
-| **fix/.***     | Patch     | Product fixes                          |
-| bugfix/.*      | Patch     | You should use fix.                    |
-| hotfix/.*      | Patch     | Are you from the past?                 |
-| ops/.*         | Patch     | Enables ops changes to trigger builds. |
-
-For example, the name of the branch for a new awesome feature named Awesome Feature, might be: 'feature/awesome_feature'.
 
 ## [Known|Non]-Issues
 
