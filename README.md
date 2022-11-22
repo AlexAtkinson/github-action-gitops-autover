@@ -61,6 +61,24 @@ This is a valid workflow utilizing this action.
             PREVIOUS_VERSION=${{ steps.gitops-autover.outputs.previous-version }}
             echo "previous-version: $PREVIOUS_VERSION"
 
+This results in outputs like:
+
+_major:_
+
+![Version 0.2.2 > 1.0.0](resources/images/ver-0.2.7-1.0.0.png)
+
+_patch:_
+
+![Version 1.0.0 > 1.0.103](resources/images/ver-1.0.0-1.0.103.png)
+
+_minor:_
+
+![Version 1.0.103 > 1.1.0](resources/images/ver-1.0.103-1.1.0.png)
+
+> Q: _How did you execute 103 merges?_<br>
+  A: You can use the bump scripts in the scripts directory of this<br>
+  repo, like: './scripts/bumpPatch.sh 42'<br>
+
 ## Discipline Dependency
 
 This action depends _only_ on the following _branch naming scheme_ being observed.
@@ -159,3 +177,4 @@ PR's welcome...
 
 - Specifying custom branch names to indicate MINOR and PATCH versions.
 - Subdirectory specific versioning.
+- Full GH Actions Workflow Example, including tagging and GH release.
