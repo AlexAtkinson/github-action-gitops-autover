@@ -61,7 +61,6 @@ This is a valid workflow utilizing this action.
             PREVIOUS_VERSION=${{ steps.gitops-autover.outputs.previous-version }}
             echo "previous-version: $PREVIOUS_VERSION"
 
-
 ## Discipline Dependency
 
 This action depends _only_ on the following _branch naming scheme_ being observed.
