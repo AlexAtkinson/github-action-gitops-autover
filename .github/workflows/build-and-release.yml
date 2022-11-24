@@ -27,7 +27,7 @@ jobs:
         id: gitops-autover
         uses: AlexAtkinson/github-action-gitops-autover@0.1.0
       - name: Set Version Envars
-          run: |
+        run: |
           VERSION=${{ steps.gitops-autover.outputs.new-version }}
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           PREVIOUS_VERSION=${{ steps.gitops-autover.outputs.previous-version }}
