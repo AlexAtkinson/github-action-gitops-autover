@@ -64,7 +64,7 @@ This is a valid workflow utilizing this action.
         - uses: actions/checkout@v3
         - name: Run GitOps Automatic Versioning Action
           id: gitops-autover
-          uses: AlexAtkinson/github-action-gitops-autover@0.1.0
+          uses: AlexAtkinson/github-action-gitops-autover@0.1.6
         - name: Verify Outputs
           run: |
             NEW_VERSION=${{ steps.gitops-autover.outputs.new-version }}
