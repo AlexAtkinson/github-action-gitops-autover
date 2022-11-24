@@ -225,9 +225,9 @@ elif [[ -n $count_fix || -n $count_bugfix || -n $count_hotfix || -n $count_ops ]
   newVersionMajor=$lastVersionMajor
   newVersionMinor=$lastVersionMinor
   [[ -n $count_fix ]]    && newVersionPatch=$((lastVersionPatch + count_fix))
-  [[ -n $count_bugfix ]] && newVersionPatch=$((lastVersionPatch + count_bugfix))
+  [[ -n $count_bugfix ]] && newVersionPatch=$((newVersionPatch + count_bugfix))
   [[ -n $count_hotfix ]] && newVersionPatch=$((newVersionPatch + count_hotfix))
-  [[ -n $count_ops ]]    && newVersionPatch=$((lastVersionPatch + count_ops))
+  [[ -n $count_ops ]]    && newVersionPatch=$((newVersionPatch + count_ops))
 fi
 
 newVersion=$(/usr/bin/env bash -c "${dir}/validateSemver.sh -9p full $newVersionMajor.$newVersionMinor.$newVersionPatch")
