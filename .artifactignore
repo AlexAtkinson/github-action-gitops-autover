@@ -1,0 +1,10 @@
+.artifactignore
+.git/
+.github/
+resources/
+LICENSE
+README.md
+.markdownlint.yml
+scripts/bumpMinor.sh
+scripts/bumpPatch.sh
+scripts/tag.sh
