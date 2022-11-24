@@ -3,6 +3,7 @@
 ![build](https://img.shields.io/github/workflow/status/AlexAtkinson/github-action-gitops-autover/Build?logo=github&style=for-the-badge)
 ![version](https://img.shields.io/github/v/release/AlexAtkinson/github-action-gitops-autover?style=for-the-badge)
 ![license](https://img.shields.io/github/license/AlexAtkinson/github-action-gitops-autover?style=for-the-badge)
+![language](https://img.shields.io/github/languages/top/AlexAtkinson/github-action-gitops-autover?style=for-the-badge)
 ![repo size](https://img.shields.io/github/repo-size/AlexAtkinson/github-action-gitops-autover?style=for-the-badge)
 
 Language/content agnostic method of automatically determining the [semantic version](https://semver.org/) for a product based on _branch_ merge history with MINIMAL discipline dependencies.
