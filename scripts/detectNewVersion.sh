@@ -187,6 +187,13 @@ if [[ $incrementMajor != 'true' ]]; then
   IFS=$IFS_BAK
 fi
 
+# echo "enh:  $count_enhancement"
+# echo "feat: $count_feature"
+# echo "fix:  $count_fix"
+# echo "bug:  $count_bugfix"
+# echo "hot:  $count_hotfix"
+# echo "ops:  $count_ops"
+
 if [[ -n $arg_f ]]; then
   true
 else
@@ -211,14 +218,16 @@ if [[ $incrementMajor == 'true' ]]; then
   newVersionPatch='0'
 elif [[ -n $count_feature || -n $count_enhancement ]]; then
   newVersionMajor=$lastVersionMajor
-  [[ -n $count_feature ]] && newVersionMinor=$((lastVersionMinor + count_feature))
+  [[ -n $count_feature ]]     && newVersionMinor=$((lastVersionMinor + count_feature))
   [[ -n $count_enhancement ]] && newVersionMinor=$((newVersionMinor + count_enhancement))
   newVersionPatch='0'
-elif [[ -n $count_bugfix || -n $count_hotfix ]]; then
+elif [[ -n $count_fix || -n $count_bugfix || -n $count_hotfix || -n $count_ops ]]; then
   newVersionMajor=$lastVersionMajor
   newVersionMinor=$lastVersionMinor
+  [[ -n $count_fix ]]    && newVersionPatch=$((lastVersionPatch + count_fix))
   [[ -n $count_bugfix ]] && newVersionPatch=$((lastVersionPatch + count_bugfix))
   [[ -n $count_hotfix ]] && newVersionPatch=$((newVersionPatch + count_hotfix))
+  [[ -n $count_ops ]]    && newVersionPatch=$((lastVersionPatch + count_ops))
 fi
 
 newVersion=$(/usr/bin/env bash -c "${dir}/validateSemver.sh -9p full $newVersionMajor.$newVersionMinor.$newVersionPatch")
@@ -228,5 +237,5 @@ if [[ -n $arg_e ]]; then
   eval "${export_var}=${newVersion}"
   export export_var
 else
-  echo -n "$newVersion"
+  echo "$newVersion"
 fi
