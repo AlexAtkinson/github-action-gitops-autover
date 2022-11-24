@@ -21,17 +21,17 @@ jobs:
           #FUNCTION=$(cut -d- -f3 <<< ${PWD##*/})
           FUNCTION=${PWD##*/}
           echo "FUNCTION=$FUNCTION" >> $GITHUB_ENV
-          ZIPFILE="${FUNCTION}.${VERSION}.zip"
-          echo "ZIPFILE=$ZIPFILE" >> $GITHUB_ENV
       - name: Run GitOps Automatic Versioning Action
         id: gitops-autover
         uses: AlexAtkinson/github-action-gitops-autover@0.1.0
-      - name: Set Version Envars
+      - name: Set Version Dependent Envars
         run: |
           VERSION=${{ steps.gitops-autover.outputs.new-version }}
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           PREVIOUS_VERSION=${{ steps.gitops-autover.outputs.previous-version }}
           echo "PREVIOUS-VERSION=$PREVIOUS_VERSION" >> $GITHUB_ENV
+          ZIPFILE="${FUNCTION}.${VERSION}.zip"
+          echo "ZIPFILE=$ZIPFILE" >> $GITHUB_ENV
       - name: "Build"
         run: |
           zip -x @.artifactignore -r ${{ env.ZIPFILE }} .

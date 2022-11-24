@@ -1,4 +1,8 @@
-# Introduction
+# GitOps Automatic Versioning
+
+![build](https://github.com/AlexAtkinson/github-action-gitops-autover/actions/workflows/build-and-release.yml/badge.svg)
+![license](https://img.shields.io/github/license/AlexAtkinson/github-action-gitops-autover)
+![repo size](https://img.shields.io/github/repo-size/AlexAtkinson/github-action-gitops-autover)
 
 Language/content agnostic method of automatically determining the [semantic version](https://semver.org/) for a product based on merge history with MINIMAL discipline dependencies.
 
@@ -58,10 +62,10 @@ This is a valid workflow utilizing this action.
         steps:
         - uses: actions/checkout@v3
         - name: Run GitOps Automatic Versioning Action
-            id: gitops-autover
-            uses: AlexAtkinson/github-action-gitops-autover@0.1.0
+          id: gitops-autover
+          uses: AlexAtkinson/github-action-gitops-autover@0.1.0
         - name: Verify Outputs
-            run: |
+          run: |
             NEW_VERSION=${{ steps.gitops-autover.outputs.new-version }}
             echo "new-version: $NEW_VERSION"
             PREVIOUS_VERSION=${{ steps.gitops-autover.outputs.previous-version }}
