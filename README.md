@@ -1,6 +1,5 @@
 # Introduction
 
-![build](https://img.shields.io/github/workflow/status/AlexAtkinson/github-action-gitops-autover/Build?logo=github&style=for-the-badge)
 ![version](https://img.shields.io/github/v/release/AlexAtkinson/github-action-gitops-autover?style=for-the-badge)
 ![license](https://img.shields.io/github/license/AlexAtkinson/github-action-gitops-autover?style=for-the-badge)
 ![language](https://img.shields.io/github/languages/top/AlexAtkinson/github-action-gitops-autover?style=for-the-badge)
