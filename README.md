@@ -1,8 +1,9 @@
 # GitOps Automatic Versioning
 
-![build](https://github.com/AlexAtkinson/github-action-gitops-autover/actions/workflows/build-and-release.yml/badge.svg)
-![license](https://img.shields.io/github/license/AlexAtkinson/github-action-gitops-autover)
-![repo size](https://img.shields.io/github/repo-size/AlexAtkinson/github-action-gitops-autover)
+![build](https://img.shields.io/github/workflow/status/AlexAtkinson/github-action-gitops-autover/Build?logo=github&style=for-the-badge)
+![version](https://img.shields.io/github/v/release/AlexAtkinson/github-action-gitops-autover?style=for-the-badge)
+![license](https://img.shields.io/github/license/AlexAtkinson/github-action-gitops-autover?style=for-the-badge)
+![repo size](https://img.shields.io/github/repo-size/AlexAtkinson/github-action-gitops-autover?style=for-the-badge)
 
 Language/content agnostic method of automatically determining the [semantic version](https://semver.org/) for a product based on merge history with MINIMAL discipline dependencies.
 
