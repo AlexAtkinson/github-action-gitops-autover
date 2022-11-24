@@ -1,12 +1,16 @@
-name: Build and Version
+name: Build
 on:
   push:
     branches:
       - main
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
-    name: "Build & Release"
+    name: "Build"
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout Source"
