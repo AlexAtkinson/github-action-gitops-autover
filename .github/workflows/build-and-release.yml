@@ -45,6 +45,6 @@ jobs:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
           automatic_release_tag: "${{ env.VERSION }}"
-          title: "${{ env.FUNCTION }} ${{ env.VERSION }}"
+          title: "${{ env.VERSION }}"
           files: |
             ${{ env.ZIPFILE }}
