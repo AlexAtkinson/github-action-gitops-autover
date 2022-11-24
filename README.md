@@ -1,13 +1,13 @@
-# GitOps Automatic Versioning
+# Introduction
 
 ![build](https://img.shields.io/github/workflow/status/AlexAtkinson/github-action-gitops-autover/Build?logo=github&style=for-the-badge)
 ![version](https://img.shields.io/github/v/release/AlexAtkinson/github-action-gitops-autover?style=for-the-badge)
 ![license](https://img.shields.io/github/license/AlexAtkinson/github-action-gitops-autover?style=for-the-badge)
 ![repo size](https://img.shields.io/github/repo-size/AlexAtkinson/github-action-gitops-autover?style=for-the-badge)
 
-Language/content agnostic method of automatically determining the [semantic version](https://semver.org/) for a product based on merge history with MINIMAL discipline dependencies.
+Language/content agnostic method of automatically determining the [semantic version](https://semver.org/) for a product based on _branch_ merge history with MINIMAL discipline dependencies.
 
-This is accomplished by counting the merges for 'enhancement/.\*', 'feature/.\*', 'fix/.\*', 'bugfix/.\*', 'hotfix/.\*', 'ops/.\*' branches into either the 'main' or 'master' branch. Folks familiar with Scrum/SAFe or GitFlow/.*Flow branching strategies will recognize this scheme.
+This is accomplished by counting the merges of branches matching the [naming scheme](#branch-naming-scheme) into either the [main|master] branch. Folks familiar with Scrum/SAFe or GitFlow/fooFlow strategies will recognize this scheme.
 
 **Yes**, this can be implemented in repos that previously used different version increment methods.
 
@@ -33,7 +33,12 @@ git push --tags</pre></dd>
 npm version $NEW_VERSION</pre></dd>
     <dd>4. Tag the repo with the new version at some point in the workflow.
   <dt>Team Setup</dt>
-    <dd>5. Ensure the iteration team adheres to the branch naming scheme defined below.</dd>
+    <dd>5. Ensure the iteration team adheres to the branch naming scheme defined below. Here's an example workflow.</dd>
+    <dd><pre>
+git checkout -b fix/not-a-feature
+git commit --allow-empty -m "This was a bug and not a feature after all..."
+git push --set-upstream origin fix/not-a-feature
+# THEN: Click the link to create a PR & merge it</pre></dd>
 </dl>
 
 ### Outputs
@@ -89,8 +94,13 @@ _minor:_
 > Q: _How did you execute 103 merges?_<br>
   A: You can use the bump scripts in the scripts directory of this<br>
   repo, like: './scripts/bumpPatch.sh 42'<br>
+  (Does not work with branch protection enabled)
+
+> NOTE: This repo uses its own action for versioning, so feel free to investigate that workflow for another example.
 
 ## Discipline Dependency
+
+### Branch Naming Scheme
 
 This action depends _only_ on the following _branch naming scheme_ being observed.
 
