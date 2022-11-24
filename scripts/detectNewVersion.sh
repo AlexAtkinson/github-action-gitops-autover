@@ -187,12 +187,12 @@ if [[ $incrementMajor != 'true' ]]; then
   IFS=$IFS_BAK
 fi
 
-echo "enh:  $count_enhancement"
-echo "feat: $count_feature"
-echo "fix:  $count_fix"
-echo "bug:  $count_bugfix"
-echo "hot:  $count_hotfix"
-echo "ops:  $count_ops"
+# echo "enh:  $count_enhancement"
+# echo "feat: $count_feature"
+# echo "fix:  $count_fix"
+# echo "bug:  $count_bugfix"
+# echo "hot:  $count_hotfix"
+# echo "ops:  $count_ops"
 
 if [[ -n $arg_f ]]; then
   true
@@ -225,13 +225,9 @@ elif [[ -n $count_fix || -n $count_bugfix || -n $count_hotfix || -n $count_ops ]
   newVersionMajor=$lastVersionMajor
   newVersionMinor=$lastVersionMinor
   [[ -n $count_fix ]]    && newVersionPatch=$((lastVersionPatch + count_fix))
-  echo $newVersionPatch
   [[ -n $count_bugfix ]] && newVersionPatch=$((newVersionPatch + count_bugfix))
-  echo $newVersionPatch
   [[ -n $count_hotfix ]] && newVersionPatch=$((newVersionPatch + count_hotfix))
-  echo $newVersionPatch
   [[ -n $count_ops ]]    && newVersionPatch=$((newVersionPatch + count_ops))
-  echo $newVersionPatch
 fi
 
 newVersion=$(/usr/bin/env bash -c "${dir}/validateSemver.sh -9p full $newVersionMajor.$newVersionMinor.$newVersionPatch")
