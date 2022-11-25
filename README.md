@@ -60,12 +60,12 @@ This is a valid workflow utilizing this action.
     name: gitops-autover
 
     on:
-    push:
+      push:
         branches:
         - main
 
     jobs:
-    use-action:
+      use-action:
         name: Verify GitOps AutoVer Action
         runs-on: ubuntu-latest
         steps:
