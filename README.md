@@ -7,7 +7,7 @@
 
 Language/content agnostic method of automatically determining the [semantic version](https://semver.org/) for a product based on _branch_ merge history with MINIMAL discipline dependencies.
 
-This is accomplished by counting the merges of branches matching the [naming scheme](#branch-naming-scheme) into either the [main|master] branch. Folks familiar with Scrum/SAFe or GitFlow/fooFlow strategies will recognize this scheme.
+This is accomplished by counting the merges of branches matching the [naming scheme](#branch-naming-scheme) into the [main|master] branch. Folks familiar with Scrum/SAFe or GitFlow/fooFlow strategies will recognize this scheme.
 
 **Yes**, this can be implemented in repos that previously used different version increment methods.
 
