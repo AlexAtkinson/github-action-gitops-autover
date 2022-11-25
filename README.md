@@ -95,10 +95,9 @@ _minor:_
 
 > Q: _How did you execute 103 merges?_<br>
   A: You can use the bump scripts in the scripts directory of this<br>
-  repo, like: './scripts/bumpPatch.sh 42'<br>
-  (Does not work with branch protection enabled)
+  repo, like: './scripts/bumpPatch.sh 42'. (Does not work with branch protection enabled)<br>
 
-> NOTE: This repo uses its own action for versioning, so feel free to investigate that workflow for another example.
+Additionally, this repo uses its own action for versioning, so feel free to investigate that workflow for another example.
 
 ## Discipline Dependency
 
