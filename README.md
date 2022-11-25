@@ -4,8 +4,9 @@
 ![license](https://img.shields.io/github/license/AlexAtkinson/github-action-gitops-autover?style=flat-square)
 ![language](https://img.shields.io/github/languages/top/AlexAtkinson/github-action-gitops-autover?style=flat-square)
 ![repo size](https://img.shields.io/github/repo-size/AlexAtkinson/github-action-gitops-autover?style=flat-square)
-[![HitCount](https://hits.dwyl.com/AlexAtkinson/github-action-gitops-autover.svg?style=flat-square)](http://hits.dwyl.com/AlexAtkinson/github-action-gitops-autover)
-![Count of Action Users](https://img.shields.io/endpoint?url=https://AlexAtkinson.github.io/github-action-gitops-autover/github-action-gitops-autover.json)
+![HitCount](https://hits.dwyl.com/AlexAtkinson/github-action-gitops-autover.svg?style=flat-square)
+![Count of Action Users](https://img.shields.io/endpoint?url=https://AlexAtkinson.github.io/github-action-gitops-autover/github-action-gitops-autover.json&style=flat-square)
+<!-- https://github.com/marketplace/actions/count-action-users -->
 
 Language/content agnostic method of automatically determining the [semantic version](https://semver.org/) for a product based on _branch_ merge history with MINIMAL discipline dependencies.
 
