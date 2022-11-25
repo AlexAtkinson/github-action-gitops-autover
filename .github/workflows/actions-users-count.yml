@@ -2,7 +2,7 @@ name: count-action-users
 
 on:
   schedule:
-    - cron: '0 */6 * * *'
+    - cron: '0 4 * * *'
   workflow_dispatch:
 
 jobs:
@@ -10,10 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-
+      with:
+        ref: gh-pages
     - name: Generate user count JSON endpoint
       uses: cicirello/count-action-users@v1
       with:
-        action-list: AlexAtkinson/gitops-automatic-versioning
+        action-list: AlexAtkinson/github-action-gitops-autover
       env:
         GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
