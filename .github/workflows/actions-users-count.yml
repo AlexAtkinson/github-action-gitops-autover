@@ -1,0 +1,19 @@
+name: count-action-users
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+jobs:
+  count:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Generate user count JSON endpoint
+      uses: cicirello/count-action-users@v1
+      with:
+        action-list: AlexAtkinson/gitops-automatic-versioning
+      env:
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
