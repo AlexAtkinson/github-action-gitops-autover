@@ -4,7 +4,7 @@
 ![license](https://img.shields.io/github/license/AlexAtkinson/github-action-gitops-autover?style=flat-square)
 ![language](https://img.shields.io/github/languages/top/AlexAtkinson/github-action-gitops-autover?style=flat-square)
 ![repo size](https://img.shields.io/github/repo-size/AlexAtkinson/github-action-gitops-autover?style=flat-square)
-![HitCount](https://hits.dwyl.com/AlexAtkinson/github-action-gitops-autover.svg?style=flat-square)
+<!-- ![HitCount](https://hits.dwyl.com/AlexAtkinson/github-action-gitops-autover.svg?style=flat-square) -->
 ![Count of Action Users](https://img.shields.io/endpoint?url=https://AlexAtkinson.github.io/github-action-gitops-autover/github-action-gitops-autover.json&style=flat-square)
 <!-- https://github.com/marketplace/actions/count-action-users -->
 
@@ -196,9 +196,8 @@ For those interested, here's some pseudo code:
 
 ## Future Enhancements
 
-PR's welcome...
+PRs are welcome.
 
-- Specifying custom branch names to indicate MINOR and PATCH versions.
-- Subdirectory specific versioning.
-- Full GH Actions Workflow Example, including tagging and GH release.
-- CAN'T DO: unshallow from last version tag to latest commit to... Seems a limitation of (git at first glance).
+- input(s): iteration-branches (map) - inform MINOR and PATCH incrementing branch name patterns.
+- input(s): mono-mode (bool) - version subdirs discretely
+- ~~CAN'T DO~~: DONE: unshallow from last version tag to latest commit to... Seems a limitation of (git at first glance). See the [Checkout From Tag](https://github.com/marketplace/actions/checkout-from-tag) action.
