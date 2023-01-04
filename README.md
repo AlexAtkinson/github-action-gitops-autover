@@ -55,7 +55,7 @@ git push --set-upstream origin fix/not-a-feature
 
 ### Example GH Action Workflow
 
-This is a valid workflow utilizing this action.
+Below is a valid workflow utilizing this action. If you wanted to extend it to do something like update a 'package.json' version, for example, you would simply create a step that runs: `npm version $NEW_VERSION`.
 
     name: gitops-autover
 
