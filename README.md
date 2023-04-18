@@ -14,8 +14,6 @@ This is accomplished by counting the merges of branches matching the [naming sch
 
 **Yes**, this can be implemented in repos that previously used different version increment methods.
 
-> NOTE: While this is a production hardened versioning kit, it's implementation as a GH action took a bit of fussing. Please test it and provide any feedback by opening an issue.
-
 ## Usage
 
 ### Setup
