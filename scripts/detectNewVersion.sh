@@ -229,6 +229,8 @@ elif [[ -n $count_fix || -n $count_bugfix || -n $count_hotfix || -n $count_ops ]
   [[ -n $count_hotfix ]] && newVersionPatch=$((newVersionPatch + count_hotfix))
   [[ -n $count_ops ]]    && newVersionPatch=$((newVersionPatch + count_ops))
 else
+  newVersionMajor=$lastVersionMajor
+  newVersionMinor=$lastVersionMinor
   newVersionPatch=$((lastVersionPatch + 1))
 fi
 
