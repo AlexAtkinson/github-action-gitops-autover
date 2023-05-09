@@ -194,19 +194,19 @@ fi
 # echo "hot:  $count_hotfix"
 # echo "ops:  $count_ops"
 
-if [[ -n $arg_f ]]; then
-  true
-else
-  if [[ -z $incrementMajor && -z $count_feature && -z $count_enhancement && -z $count_fix && -z $count_bugfix && -z $count_hotfix && -z $count_ops ]]; then
-    echo -e "\e[01;31mERROR\e[00m: No feature, enhancement, fix, bugfix, hotfix, or ops branches detected!"
-    exit 1 # For GH Actions
-    if [[ "$sourced" == 0 ]]; then
-      exit 1
-    else
-      return 1
-    fi
-  fi
-fi
+# if [[ -n $arg_f ]]; then
+#   true
+# else
+#   if [[ -z $incrementMajor && -z $count_feature && -z $count_enhancement && -z $count_fix && -z $count_bugfix && -z $count_hotfix && -z $count_ops ]]; then
+#     echo -e "\e[01;31mERROR\e[00m: No feature, enhancement, fix, bugfix, hotfix, or ops branches detected!"
+#     exit 1 # For GH Actions
+#     if [[ "$sourced" == 0 ]]; then
+#       exit 1
+#     else
+#       return 1
+#     fi
+#   fi
+# fi
 
 # --------------------------------------------------------------------------------------------------
 # Main Operations
