@@ -10,7 +10,7 @@ jobs:
     - uses: actions/checkout@v3
     - name: Run GitOps Automatic Versioning Action
       id: gitops-autover
-      uses: AlexAtkinson/github-action-gitops-autover@0.1.7
+      uses: AlexAtkinson/github-action-gitops-autover@2.0
     - name: Verify Outputs (IN SAME JOB)
       run: |
         NEW_VERSION=${{ steps.gitops-autover.outputs.new-version }}
