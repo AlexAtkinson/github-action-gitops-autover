@@ -44,6 +44,9 @@ DESCRIPTION
 
       -f      Forces a re-evaluation of the entire git history.
 
+      -p      Increments PATCH version on _every_ run.
+              WARN: This is intended development use only.
+
 EXAMPLES
       The following detects the new version for the repo.
 
@@ -72,7 +75,7 @@ fi
 # --------------------------------------------------------------------------------------------------
 
 OPTIND=1
-while getopts "he:vf" opt; do
+while getopts "he:vfp" opt; do
   case $opt in
     h)
       printHelp
@@ -88,6 +91,9 @@ while getopts "he:vf" opt; do
       ;;
     f)
       arg_f='set'
+      ;;
+    p)
+      arg_p='set'
       ;;
     *)
       echo -e "\e[01;31mERROR\e[00m: Invalid argument!"
@@ -194,19 +200,19 @@ fi
 # echo "hot:  $count_hotfix"
 # echo "ops:  $count_ops"
 
-# if [[ -n $arg_f ]]; then
-#   true
-# else
-#   if [[ -z $incrementMajor && -z $count_feature && -z $count_enhancement && -z $count_fix && -z $count_bugfix && -z $count_hotfix && -z $count_ops ]]; then
-#     echo -e "\e[01;31mERROR\e[00m: No feature, enhancement, fix, bugfix, hotfix, or ops branches detected!"
-#     exit 1 # For GH Actions
-#     if [[ "$sourced" == 0 ]]; then
-#       exit 1
-#     else
-#       return 1
-#     fi
-#   fi
-# fi
+if [[ -n $arg_f ]]; then
+  true
+else
+  if [[ -z $incrementMajor && -z $count_feature && -z $count_enhancement && -z $count_fix && -z $count_bugfix && -z $count_hotfix && -z $count_ops ]]; then
+    echo -e "\e[01;31mERROR\e[00m: No feature, enhancement, fix, bugfix, hotfix, or ops branches detected!"
+    exit 1 # For GH Actions
+    if [[ "$sourced" == 0 ]]; then
+      exit 1
+    else
+      return 1
+    fi
+  fi
+fi
 
 # --------------------------------------------------------------------------------------------------
 # Main Operations
@@ -228,7 +234,7 @@ elif [[ -n $count_fix || -n $count_bugfix || -n $count_hotfix || -n $count_ops ]
   [[ -n $count_bugfix ]] && newVersionPatch=$((newVersionPatch + count_bugfix))
   [[ -n $count_hotfix ]] && newVersionPatch=$((newVersionPatch + count_hotfix))
   [[ -n $count_ops ]]    && newVersionPatch=$((newVersionPatch + count_ops))
-else
+elif [[ -n $arg_p && -z $incrementMajor && -z $count_feature && -z $count_enhancement && -z $count_fix && -z $count_bugfix && -z $count_hotfix && -z $count_ops ]]; then
   newVersionMajor=$lastVersionMajor
   newVersionMinor=$lastVersionMinor
   newVersionPatch=$((lastVersionPatch + 1))
