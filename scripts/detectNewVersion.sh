@@ -44,6 +44,9 @@ DESCRIPTION
 
       -f      Forces a re-evaluation of the entire git history.
 
+      -p      Increments PATCH version on _every_ run.
+              WARN: This is intended development use only.
+
 EXAMPLES
       The following detects the new version for the repo.
 
@@ -64,7 +67,7 @@ printHelp() {
 # --------------------------------------------------------------------------------------------------
 
 if ! git rev-parse --git-dir > /dev/null 2>&1; then
-  echo -e "\e[01;31mFATAL\e[00m: This is not a git repository!\n"
+  echo -e "\e[01;31mFATAL\e[00m: 590 - This is not a git repository!\n"
 fi
 
 # --------------------------------------------------------------------------------------------------
@@ -72,7 +75,7 @@ fi
 # --------------------------------------------------------------------------------------------------
 
 OPTIND=1
-while getopts "he:vf" opt; do
+while getopts "he:vfp" opt; do
   case $opt in
     h)
       printHelp
@@ -89,8 +92,11 @@ while getopts "he:vf" opt; do
     f)
       arg_f='set'
       ;;
+    p)
+      arg_p='set'
+      ;;
     *)
-      echo -e "\e[01;31mERROR\e[00m: Invalid argument!"
+      echo -e "\e[01;31mERROR\e[00m: 570 - Invalid argument!"
       printHelp
       if [[ "$sourced" == 0 ]]; then
         exit 0
@@ -147,7 +153,7 @@ case "$origin_host" in
     field=1
   ;;
   *)
-    echo -e "\e[01;31mERROR\e[0m: Unsupported origin host."
+    echo -e "\e[01;31mERROR\e[0m: 591 - Unsupported origin host."
     exit 1
   ;;
 esac
@@ -198,7 +204,7 @@ if [[ -n $arg_f ]]; then
   true
 else
   if [[ -z $incrementMajor && -z $count_feature && -z $count_enhancement && -z $count_fix && -z $count_bugfix && -z $count_hotfix && -z $count_ops ]]; then
-    echo -e "\e[01;31mERROR\e[00m: No feature, enhancement, fix, bugfix, hotfix, or ops branches detected!"
+    echo -e "\e[01;31mERROR\e[00m: 599 - No feature, enhancement, fix, bugfix, hotfix, or ops branches detected!"
     exit 1 # For GH Actions
     if [[ "$sourced" == 0 ]]; then
       exit 1
@@ -228,6 +234,10 @@ elif [[ -n $count_fix || -n $count_bugfix || -n $count_hotfix || -n $count_ops ]
   [[ -n $count_bugfix ]] && newVersionPatch=$((newVersionPatch + count_bugfix))
   [[ -n $count_hotfix ]] && newVersionPatch=$((newVersionPatch + count_hotfix))
   [[ -n $count_ops ]]    && newVersionPatch=$((newVersionPatch + count_ops))
+elif [[ -n $arg_p && -z $incrementMajor && -z $count_feature && -z $count_enhancement && -z $count_fix && -z $count_bugfix && -z $count_hotfix && -z $count_ops ]]; then
+  newVersionMajor=$lastVersionMajor
+  newVersionMinor=$lastVersionMinor
+  newVersionPatch=$((lastVersionPatch + 1))
 fi
 
 newVersion=$(/usr/bin/env bash -c "${dir}/validateSemver.sh -9p full $newVersionMajor.$newVersionMinor.$newVersionPatch")
