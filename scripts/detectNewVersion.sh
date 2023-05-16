@@ -67,7 +67,7 @@ printHelp() {
 # --------------------------------------------------------------------------------------------------
 
 if ! git rev-parse --git-dir > /dev/null 2>&1; then
-  echo -e "\e[01;31mFATAL\e[00m: This is not a git repository!\n"
+  echo -e "\e[01;31mFATAL\e[00m: 590 - This is not a git repository!\n"
 fi
 
 # --------------------------------------------------------------------------------------------------
@@ -96,7 +96,7 @@ while getopts "he:vfp" opt; do
       arg_p='set'
       ;;
     *)
-      echo -e "\e[01;31mERROR\e[00m: Invalid argument!"
+      echo -e "\e[01;31mERROR\e[00m: 570 - Invalid argument!"
       printHelp
       if [[ "$sourced" == 0 ]]; then
         exit 0
@@ -153,7 +153,7 @@ case "$origin_host" in
     field=1
   ;;
   *)
-    echo -e "\e[01;31mERROR\e[0m: Unsupported origin host."
+    echo -e "\e[01;31mERROR\e[0m: 591 - Unsupported origin host."
     exit 1
   ;;
 esac
@@ -204,7 +204,7 @@ if [[ -n $arg_f ]]; then
   true
 else
   if [[ -z $incrementMajor && -z $count_feature && -z $count_enhancement && -z $count_fix && -z $count_bugfix && -z $count_hotfix && -z $count_ops ]]; then
-    echo -e "\e[01;31mERROR\e[00m: No feature, enhancement, fix, bugfix, hotfix, or ops branches detected!"
+    echo -e "\e[01;31mERROR\e[00m: 599 - No feature, enhancement, fix, bugfix, hotfix, or ops branches detected!"
     exit 1 # For GH Actions
     if [[ "$sourced" == 0 ]]; then
       exit 1
