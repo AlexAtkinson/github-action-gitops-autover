@@ -1,0 +1,31 @@
+name: Test
+on:
+  workflow_dispatch:
+
+jobs:
+  version-job:
+    name: Verify GitOps AutoVer Action
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Run GitOps Automatic Versioning Action
+      id: gitops-autover
+      uses: AlexAtkinson/github-action-gitops-autover@0.1.7
+    - name: Verify Outputs (IN SAME JOB)
+      run: |
+        NEW_VERSION=${{ steps.gitops-autover.outputs.new-version }}
+        echo "new-version: $NEW_VERSION"
+        echo "new-version=$NEW_VERSION" >> "$GITHUB_OUTPUTS"
+        PREVIOUS_VERSION=${{ steps.gitops-autover.outputs.previous-version }}
+        echo "previous-version: $PREVIOUS_VERSION"
+        echo "previous-version=$PREVIOUS_VERSION" >> "$GITHUB_OUTPUTS"
+  other-job:
+    name: Some Other Job
+    runs-on:  ubuntu-latest
+    steps:
+      - name: Verify Outputs (IN SOME OTHER JOB)
+        run: |
+          NEW_VER="${{ needs.version-job.outputs.new-version }}"
+          OLD_VER="${{ needs.version-job.outputs.previous-version }}"
+          echo "new: $NEW_VER"
+          echo "old: $OLD_VER"
