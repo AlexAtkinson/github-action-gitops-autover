@@ -14,6 +14,8 @@ This is accomplished by counting the merges of branches matching the [naming sch
 
 **Yes**, this can be implemented in repos that previously used different version increment methods.
 
+> [Convenience link to this action on the marketplace](https://github.com/marketplace/actions/gitops-automatic-versioning)
+
 ## Usage
 
 ### Setup
