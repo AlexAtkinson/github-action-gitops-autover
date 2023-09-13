@@ -40,9 +40,8 @@ runs:
           [[ "${{ inputs.force-patch-increment }}" == 'true' ]] && opt='-p'
           new_version="$(${{ github.action_path }}/scripts/detectNewVersion.sh $opt)" || true
           echo "new-version=$new_version" | tee $GITHUB_OUTPUT
-          fi
           if [[ "$new_version" =~ "520" ]]; then
-            echo -e "ERROR: 599 -  - You must source this script when specifying an environment variable! Eg: '. ./foo.sh -e bar_ver'"
+            echo -e "ERROR: 520 - You must source this script when specifying an environment variable! Eg: '. ./foo.sh -e bar_ver'"
             exit 1 || true
           fi
           if [[ "$new_version" =~ "570" ]]; then
@@ -60,6 +59,7 @@ runs:
           if [[ "$new_version" =~ "599" ]]; then
             echo -e "ERROR: 599 - No feature, enhancement, fix, bugfix, hotfix, or ops branches detected!"
             exit 1 || true
+          fi
       shell: bash
 
 # See github contexts for more like github.action_path.
