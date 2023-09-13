@@ -229,11 +229,12 @@ elif [[ -n $count_feature || -n $count_enhancement ]]; then
 elif [[ -n $count_fix || -n $count_bugfix || -n $count_hotfix || -n $count_ops ]]; then
   newVersionMajor=$lastVersionMajor
   newVersionMinor=$lastVersionMinor
+  newVersionPatch=$lastVersionPatch
   [[ -n $count_fix ]]    && newVersionPatch=$((lastVersionPatch + count_fix))
   [[ -n $count_bugfix ]] && newVersionPatch=$((newVersionPatch + count_bugfix))
   [[ -n $count_hotfix ]] && newVersionPatch=$((newVersionPatch + count_hotfix))
   [[ -n $count_ops ]]    && newVersionPatch=$((newVersionPatch + count_ops))
-elif [[ -n $arg_p && -z $incrementMajor && -z $count_feature && -z $count_enhancement && -z $count_fix && -z $count_bugfix && -z $count_hotfix && -z $count_ops ]]; then
+elif [[ -n $arg_p ]]; then
   newVersionMajor=$lastVersionMajor
   newVersionMinor=$lastVersionMinor
   newVersionPatch=$((lastVersionPatch + 1))
