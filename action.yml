@@ -40,26 +40,6 @@ runs:
           [[ "${{ inputs.force-patch-increment }}" == 'true' ]] && opt='-p'
           new_version="$(${{ github.action_path }}/scripts/detectNewVersion.sh $opt)"
           echo "new-version=$new_version" | tee $GITHUB_OUTPUT
-          if [[ "$new_version" =~ "570" ]]; then
-            echo -e "\e[01;31mERROR\e[00m: 570 - Invalid argument!"
-            exit 1 || true
-          fi
-          if [[ "$new_version" =~ "590" ]]; then
-            echo -e "\e[01;31mFATAL\e[00m: 501 - This is not a git repository!"
-            exit 1 || true
-          fi
-          if [[ "$new_version" =~ "591" ]]; then
-            echo -e "\e[01;31mERROR\e[0m: 591 - Unsupported origin host."
-            exit 1 || true
-          fi
-          if [[ "$new_version" =~ "599" ]]; then
-            echo -e "\e[01;31mERROR\e[00m: 599 - No feature, enhancement, fix, bugfix, hotfix, or ops branches detected!"
-            exit 1 || true
-          fi
-          if [[ "$new_version" =~ "520" ]]; then
-            echo -e "\e[01;31mERROR\e[00m: 599 -  - You must source this script when specifying an environment variable! Eg: '. ./foo.sh -e bar_ver'"
-            exit 1 || true
-          fi
       shell: bash
 
 # See github contexts for more like github.action_path.
