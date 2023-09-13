@@ -16,6 +16,10 @@ This is accomplished by counting the merges of branches matching the [naming sch
 
 > [Convenience link to this action on the marketplace](https://github.com/marketplace/actions/gitops-automatic-versioning)
 
+## Recent Changes
+
+- 0.2.9: Fix 'ops' increments; add user friendly error outputs.
+
 ## Usage
 
 ### Setup
@@ -73,7 +77,7 @@ Below is a valid workflow utilizing this action. If you wanted to extend it to d
         - uses: actions/checkout@v3
         - name: Run GitOps Automatic Versioning Action
           id: gitops-autover
-          uses: AlexAtkinson/github-action-gitops-autover@0.1.7
+          uses: AlexAtkinson/github-action-gitops-autover@0.2.9
         - name: Verify Outputs
           run: |
             NEW_VERSION=${{ steps.gitops-autover.outputs.new-version }}
@@ -140,7 +144,7 @@ Additionally, this repo uses its own action for versioning, so feel free to inve
             echo "PRODUCT_NAME_LOWER=$PRODUCT_NAME_LOWER" >> $GITHUB_OUTPUT
         - name: GitOps Automatic Versioning
           id: gitops-autover
-          uses: AlexAtkinson/github-action-gitops-autover@0.1.7
+          uses: AlexAtkinson/github-action-gitops-autover@0.2.9
       build:
         name: "Build"
         runs-on: ubuntu-latest
