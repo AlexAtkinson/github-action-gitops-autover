@@ -97,6 +97,7 @@ while getopts "he:vfp" opt; do
       ;;
     *)
       echo -e "\e[01;31mERROR\e[00m: 570 - Invalid argument!"
+    echo "::error title=Argument Error::ERROR 570 - Invalid argument!"
       printHelp
       if [[ "$sourced" == 0 ]]; then
         exit 0
@@ -154,6 +155,7 @@ case "$origin_host" in
   ;;
   *)
     echo -e "\e[01;31mERROR\e[0m: 591 - Unsupported origin host."
+    echo "::error title=Origin Host Error::ERROR 591 - Unsupported origin host!"
     exit 1
   ;;
 esac
@@ -164,7 +166,8 @@ esac
 
 if [[ -n $arg_e ]]; then
   if [[ "$sourced" == 0 ]]; then
-    echo -e "[$(${tsCmd})] \e[01;31mERROR\e[00m: You must source this script when specifying an environment variable! Eg: '. ./${0##*/} -e foo_ver'\n"
+    echo -e "[$(${tsCmd})] \e[01;31mERROR\e[00m: 520 - You must source this script when specifying an environment variable! Eg: '. ./${0##*/} -e foo_ver'\n"
+    echo "::error title=Usage Error::ERROR 520 - You must source this script when specifying an environment variable! Eg: '. ./foo.sh -e bar_ver'"
     exit 1
   fi
 fi
@@ -205,12 +208,8 @@ if [[ -n $arg_f ]]; then
 else
   if [[ -z $incrementMajor && -z $count_feature && -z $count_enhancement && -z $count_fix && -z $count_bugfix && -z $count_hotfix && -z $count_ops ]]; then
     echo -e "\e[01;31mERROR\e[00m: 599 - No feature, enhancement, fix, bugfix, hotfix, or ops branches detected!"
-    exit 1 # For GH Actions
-    if [[ "$sourced" == 0 ]]; then
-      exit 1
-    else
-      return 1
-    fi
+    echo "::error title=No Valid Merge Detected::ERROR 599 - No feature, enhancement, fix, bugfix, hotfix, or ops branches detected!"
+    exit 1
   fi
 fi
 

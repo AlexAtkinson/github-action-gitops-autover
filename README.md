@@ -4,7 +4,7 @@
 ![license](https://img.shields.io/github/license/AlexAtkinson/github-action-gitops-autover?style=flat-square)
 ![language](https://img.shields.io/github/languages/top/AlexAtkinson/github-action-gitops-autover?style=flat-square)
 ![repo size](https://img.shields.io/github/repo-size/AlexAtkinson/github-action-gitops-autover?style=flat-square)
-![Count of Action Users](https://img.shields.io/endpoint?url=https://AlexAtkinson.github.io/github-action-gitops-autover/github-action-gitops-autover.json&style=flat-square)
+<!-- ![Count of Action Users](https://img.shields.io/endpoint?url=https://AlexAtkinson.github.io/github-action-gitops-autover/github-action-gitops-autover.json&style=flat-square) -->
 <!-- https://github.com/marketplace/actions/count-action-users -->
 <!-- ![HitCount](https://hits.dwyl.com/AlexAtkinson/github-action-gitops-autover.svg?style=flat-square) -->
 
@@ -32,11 +32,12 @@ git push --tags</pre></dd>
   <dt>Workflow Setup</dt>
     <dd>2. Ensure your action executes a checkout step prior to using this action.</dd>
     <dd>3. Use the outputs from this action as desired. For example, you might use it to update the version of an npm package:</dd>
-    <dd><pre>
-npm version $NEW_VERSION</pre></dd>
+    <dd>
+    <pre>npm version ${{ steps.gitops-autover.outputs.new-version }}</pre>
+    </dd>
     <dd>4. Tag the repo with the new version at some point in the workflow.
   <dt>Team Setup</dt>
-    <dd>5. Ensure the iteration team adheres to the branch naming scheme defined below. Here's an example workflow.</dd>
+    <dd>5. Ensure the iteration team adheres to the branch naming scheme defined below. Here's an example workflow. Bonus points for integrating branch management into your issue tracking system.</dd>
     <dd><pre>
 git checkout -b fix/not-a-feature
 git commit --allow-empty -m "This was a bug and not a feature after all..."
@@ -53,7 +54,7 @@ git push --set-upstream origin fix/not-a-feature
     <dd>The previous version.</dd>
 </dl>
 
-### Example GH Action Workflow
+### Example GH Action Workflows
 
 Below is a valid workflow utilizing this action. If you wanted to extend it to do something like update a 'package.json' version, for example, you would simply create a step that runs: `npm version $NEW_VERSION`.
 
@@ -100,6 +101,56 @@ _minor:_
 
 Additionally, this repo uses its own action for versioning, so feel free to investigate that workflow for another example.
 
+### A More Complete Example
+
+    name: gitops-autover-example
+    on:
+      push:
+        branches:
+          - main
+    jobs:
+      init:
+        name: Initialize
+        runs-on: ubuntu-latest
+        outputs:
+          REPOSITORY: ${{ steps.init.outputs.REPOSITORY }}
+          PRODUCT: ${{ steps.init.outputs.PRODUCT_NAME }}
+          PRODUCT_NAME_LOWER: ${{ steps.init.outputs.PRODUCT_NAME_LOWER }}
+          NEW_VERSION: ${{ steps.gitops-autover.outputs.new-version }}
+          PREVIOUS_VERSION: ${{ steps.gitops-autover.outputs.previous-version }}
+        steps:
+        - name: Checkout Source
+          uses: actions/checkout@v3
+          with:
+            lfs: true
+            fetch-depth: 0
+        - name: Initialize
+          id: init
+          run: |
+            # Detect repo name.
+            REPOSITORY=${PWD##*/}
+            echo "REPOSITORY=$REPOSITORY" >> $GITHUB_OUTPUT
+            # Autodetect product name. Eg:
+            #   A repo named cool-corp-awesome-docker will result in
+            #   the image being pushed as: awesome-docker:x.x.x
+            [[ $(echo -n "$(cut -d- -f3- <<< ${REPOSITORY})" | wc -c) -gt 0 ]] && PRODUCT_NAME=$(cut -d- -f3- <<< ${REPOSITORY})
+            [[ $(echo -n "$(cut -d- -f3- <<< ${REPOSITORY})" | wc -c) -eq 0 ]] && PRODUCT_NAME=default
+            echo "PRODUCT_NAME=$PRODUCT_NAME" >> $GITHUB_OUTPUT
+            PRODUCT_NAME_LOWER=${PRODUCT_NAME,,}
+            echo "PRODUCT_NAME_LOWER=$PRODUCT_NAME_LOWER" >> $GITHUB_OUTPUT
+        - name: GitOps Automatic Versioning
+          id: gitops-autover
+          uses: AlexAtkinson/github-action-gitops-autover@0.1.7
+      build:
+        name: "Build"
+        runs-on: ubuntu-latest
+        needs: [init]
+        steps:
+          - name: "Build"
+            run: |
+              echo "SUCCESSFUL BUILD" > "${{ needs.init.outputs.PRODUCT_NAME_LOWER }}.${{ needs.init.outputs.NEW_VERSION }}.txt"
+              # Then bolt on extras such as slack notify or github release actions as needed.
+
 ## Discipline Dependency
 
 ### Branch Naming Scheme
@@ -123,9 +174,13 @@ This action is _most_ suitable for git projects with the following operational d
 
 - Each merge into main|master is intended to produce an artifact, following the "everything is potentially releasabe" approach.
 
-This action is _not_ suitable for projects requiring pre-release, beta, etc., type fields. Such projects should depend upon their own language native tooling.
-
-This action is _not_ suitable for projects requiring version numbers to be planned and orchestrated ahead of time.
+This action is _not_ suitable for projects requiring:
+  - pre-release, beta, etc., type fields. Such projects should depend upon their own language native tooling.
+  - specific version numbers to be planned and orchestrated ahead of time (usually marketing efforts).
+    - Exception: Major releases. These can be actioned on demand as outlined below.
+  - rebase merges. Reminder: this action _depends_ on merge commit messages.
+    - Exception: Patterns like: main < (merge-commit) < staging-branch < (rebase) work-branches
+      - As long as main|master gets a merge commit message, everyone is happy.
 
 ## Version Format
 
