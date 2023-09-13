@@ -38,7 +38,7 @@ runs:
           opt=''
           [[ "${{ inputs.force-re-evaluate }}" == 'true' ]] && opt='-f'
           [[ "${{ inputs.force-patch-increment }}" == 'true' ]] && opt='-p'
-          new_version="$(${{ github.action_path }}/scripts/detectNewVersion.sh $opt)"
+          new_version="$(${{ github.action_path }}/scripts/detectNewVersion.sh $opt)" || true
           echo "new-version=$new_version" | tee $GITHUB_OUTPUT
           fi
           if [[ "$new_version" =~ "520" ]]; then
