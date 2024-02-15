@@ -8,7 +8,7 @@
 <!-- https://github.com/marketplace/actions/count-action-users -->
 <!-- ![HitCount](https://hits.dwyl.com/AlexAtkinson/github-action-gitops-autover.svg?style=flat-square) -->
 
-Language/content agnostic method of automatically determining the [semantic version](https://semver.org/) for a product based on _branch_ merge history with MINIMAL discipline dependencies.
+Language/content agnostic method of automatically determining the [semantic version](https://semver.org/) for a product based on _branch_ merge history with MINIMAL [discipline dependencies](https://github.com/marketplace/actions/gitops-automatic-versioning?#discipline-dependency).
 
 This is accomplished by counting the merges of branches matching the [naming scheme](#branch-naming-scheme) into the [main|master] branch. Folks familiar with Scrum/SAFe or GitFlow/fooFlow strategies will recognize this scheme.
 
