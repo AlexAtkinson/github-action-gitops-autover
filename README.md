@@ -12,7 +12,11 @@ Language/content agnostic method of automatically determining the [semantic vers
 
 This is accomplished by counting the merges of branches matching the [naming scheme](#branch-naming-scheme) into the [main|master] branch. Folks familiar with Scrum/SAFe or GitFlow/fooFlow strategies will recognize this scheme.
 
-**Yes**, this can be implemented in repos that previously used different version increment methods.
+**Burning Questions**
+
+- **Yes** - This can indeed be implemented in repos that previously used different version increment methods.
+- **Yes** - Jira will recognize the issue tag anywhere in the branch name -- it does not have to be a prefix.
+- **Yes** - This aligns with and extends on guidance from Atlassian on branch naming schemes.
 
 > [Convenience link to this action on the marketplace](https://github.com/marketplace/actions/gitops-automatic-versioning)
 
