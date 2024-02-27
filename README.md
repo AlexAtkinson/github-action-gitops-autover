@@ -16,7 +16,7 @@ This is accomplished by counting the merges of branches matching the [naming sch
 
 - **Yes** - This can indeed be implemented in repos that previously used different version increment methods.
 - **Yes** - Jira will recognize the issue tag anywhere in the branch name -- it does not have to be a prefix.
-- **Yes** - This aligns with and extends on guidance from Atlassian on branch naming schemes.
+- **Yes** - This aligns with and extends on [guidance](https://confluence.atlassian.com/bitbucketserver050/using-branches-in-bitbucket-server-913474726.html) from Atlassian on branch naming schemes.
 
 > [Convenience link to this action on the marketplace](https://github.com/marketplace/actions/gitops-automatic-versioning)
 
