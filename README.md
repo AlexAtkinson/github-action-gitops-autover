@@ -22,6 +22,8 @@ This is accomplished by counting the merges of branches matching the [naming sch
 
 ## Recent Changes
 
+- 0.3.0: Bring back the unshallowing, which ensures the full git log is available.
+  - TODO: Adjust scripts to use `git log --remotes` to avoid unshallowing large repos.
 - 0.2.9: Fix 'ops' increments; add user friendly error outputs.
 
 ## Usage
@@ -148,7 +150,7 @@ Additionally, this repo uses its own action for versioning, so feel free to inve
             echo "PRODUCT_NAME_LOWER=$PRODUCT_NAME_LOWER" >> $GITHUB_OUTPUT
         - name: GitOps Automatic Versioning
           id: gitops-autover
-          uses: AlexAtkinson/github-action-gitops-autover@0.2.9
+          uses: AlexAtkinson/github-action-gitops-autover@0.3.0
       build:
         name: "Build"
         runs-on: ubuntu-latest
