@@ -83,7 +83,7 @@ Below is a valid workflow utilizing this action. If you wanted to extend it to d
         - uses: actions/checkout@v3
         - name: Run GitOps Automatic Versioning Action
           id: gitops-autover
-          uses: AlexAtkinson/github-action-gitops-autover@0.2.9
+          uses: AlexAtkinson/github-action-gitops-autover@0.3.0
         - name: Verify Outputs
           run: |
             NEW_VERSION=${{ steps.gitops-autover.outputs.new-version }}
