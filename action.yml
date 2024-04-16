@@ -24,7 +24,7 @@ runs:
   using: "composite"
   steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Ensure full commit history
       run: |
           cd $GITHUB_WORKSPACE
