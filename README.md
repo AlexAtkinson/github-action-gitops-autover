@@ -22,6 +22,7 @@ This is accomplished by counting the merges of branches matching the [naming sch
 
 ## Recent Changes
 
+- 0.3.1: Update the checkout action version to v4.
 - 0.3.0: Bring back the unshallowing, which ensures the full git log is available.
   - TODO: Adjust scripts to use `git log --remotes` to avoid unshallowing large repos.
 - 0.2.9: Fix 'ops' increments; add user friendly error outputs.
