@@ -13,6 +13,18 @@ inputs:
     description: "Forces a PATCH increment if no other increment detected. NOTE: This is intended for development purposes only."
     required: false
     default: 'false'
+  mono-repo-mode:
+    description: "Enable semver matching against any tag structure that includes a valid semver string. Eg: <product-name>_<semver>"
+    required: false
+    default: 'false'
+  mono-repo-product-name:
+    description: "The product name to match against. For example, 'bob', would match the tags like 'bob_1.2.3'. Required if 'mono-repo-mode' is enabled."
+    required: false
+    default: ''
+  mono-repo-product-path:
+    description: "The path to the product. IE: 'path/to/bob'. Required if 'mono-repo-mode' is enabled."
+    required: false
+    default: ''
 outputs:
   new-version:
     description: "New Version"
@@ -41,8 +53,14 @@ runs:
       run: |
           cd $GITHUB_WORKSPACE
           opt=''
-          [[ "${{ inputs.force-re-evaluate }}" == 'true' ]] && opt='-f'
-          [[ "${{ inputs.force-patch-increment }}" == 'true' ]] && opt='-p'
+          [[ "${{ inputs.force-re-evaluate }}" == 'true' ]] && opt='$opt -f'
+          [[ "${{ inputs.force-patch-increment }}" == 'true' ]] && opt='$opt -p'
+          [[ "${{ inputs.mono-repo-mode }}" == 'true' ]] && opt='$opt -m'
+          if [[ "${{ inputs.mono-repo-mode }}" == 'true' && -z ${{ inputs.mono-repo-product-name }} ]]; then
+            echo -e "ERROR: 571 - mono-repo-product-name must be set and NOT null!"
+            exit 1 || true
+          fi
+          [[ -n "${{ inputs.mono-repo-product-name }}" ]] && opt='$opt -n ${{ inputs.mono-repo-product-name }}'
           new_version="$(${{ github.action_path }}/scripts/detectNewVersion.sh $opt)" || true
           echo "new-version=$new_version" | tee $GITHUB_OUTPUT
           if [[ "$new_version" =~ "520" ]]; then

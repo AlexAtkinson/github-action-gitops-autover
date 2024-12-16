@@ -22,6 +22,8 @@ This is accomplished by counting the merges of branches matching the [naming sch
 
 ## Recent Changes
 
+- 1.0.0: (non-breaking) Addition of support for mono-repos. IE: Discretely version specific directories.
+  - NOTE: Github, Jira, etc., were designed to host one product per repo/project. DO NOT create new mono-repo projects unless you're specifically tooling out to support them well.
 - 0.3.1: Update the checkout action version to v4.
 - 0.3.0: Bring back the unshallowing, which ensures the full git log is available.
   - TODO: Adjust scripts to use `git log --remotes` to avoid unshallowing large repos.
@@ -54,6 +56,33 @@ git checkout -b fix/not-a-feature
 git commit --allow-empty -m "This was a bug and not a feature after all..."
 git push --set-upstream origin fix/not-a-feature
 # THEN: Click the link to create a PR & merge it</pre></dd>
+</dl>
+
+### Inputs
+
+Note: Only required for setting up mono-repo versioning.
+
+<dl>
+  <dt>mono-repo-mode: [bool]</dt>
+    <dd>Enable semver matching against any tag structure that includes a valid semver string.<br>
+    Eg: '&lt;product-name&gt;_&lt;semver&gt;'<br>
+    <i>Required:</i> false<br>
+    <i>Default:</i> false</dd>
+  <dt>mono-repo-product-name: [string]</dt>
+    <dd>The product name to match against.<br>
+    Eg: 'bob', would match the tags like 'bob_1.2.3'.<br>
+    <i>Required:</i> if mono-repo-mode: true<br>
+    <i>Default:</i> ''</dd>
+  <dt>mono-repo-product-path: [string]</dt>
+    <dd>The path to the product.<br>
+    Eg: path/to/bob<br>
+    <i>Required:</i> if mono-repo-mode: true<br>
+    <i>Default:</i> ''</dd>
+  <dt>force-patch-increment: [bool]</dt>
+    <dd>Forces a PATCH increment if no other increment detected.<br>
+    (Intended for development purposes only.)<br>
+    <i>Required:</i> false<br>
+    <i>Default:</i> false</dd>
 </dl>
 
 ### Outputs
@@ -91,6 +120,15 @@ Below is a valid workflow utilizing this action. If you wanted to extend it to d
             echo "new-version: $NEW_VERSION"
             PREVIOUS_VERSION=${{ steps.gitops-autover.outputs.previous-version }}
             echo "previous-version: $PREVIOUS_VERSION"
+
+To make use of the mono-repo support, simply add a block for the director you wish to version.
+
+        - name: Run GitOps Automatic Versioning Action
+          id: gitops-autover
+          uses: AlexAtkinson/github-action-gitops-autover@0.3.0
+          with:
+            mono-repo-mode: true
+            mono-repo-product-name: bob
 
 This results in outputs like:
 
@@ -265,5 +303,5 @@ For those interested, here's some pseudo code:
 PRs are welcome.
 
 - input(s): iteration-branches (map) - inform MINOR and PATCH incrementing branch name patterns.
-- input(s): mono-mode (bool) - version subdirs discretely
-- ~~CAN'T DO~~: DONE: unshallow from last version tag to latest commit to... Seems a limitation of (git at first glance). See the [Checkout From Tag](https://github.com/marketplace/actions/checkout-from-tag) action.
+- DONE: input(s): mono-mode (bool) - version subdirs discretely
+- UNDONE-CAN'T DO: ~~CAN'T DO~~: ~~DONE:~~ unshallow from last version tag to latest commit to... Seems a limitation of (git at first glance). See the [Checkout From Tag](https://github.com/marketplace/actions/checkout-from-tag) action.
