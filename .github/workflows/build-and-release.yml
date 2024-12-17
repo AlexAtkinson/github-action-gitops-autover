@@ -27,7 +27,7 @@ jobs:
           echo "FUNCTION=$FUNCTION" >> $GITHUB_ENV
       - name: Run GitOps Automatic Versioning Action
         id: gitops-autover
-        uses: AlexAtkinson/github-action-gitops-autover@0.1.7
+        uses: AlexAtkinson/github-action-gitops-autover@0.3.1
       - name: Set Version Dependent Envars
         run: |
           VERSION=${{ steps.gitops-autover.outputs.new-version }}

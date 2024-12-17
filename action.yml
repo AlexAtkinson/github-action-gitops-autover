@@ -13,6 +13,18 @@ inputs:
     description: "Forces a PATCH increment if no other increment detected. NOTE: This is intended for development purposes only."
     required: false
     default: 'false'
+  mono-repo-mode:
+    description: "Enable semver matching against any tag structure that includes a valid semver string. Eg: <product-name>_<semver>"
+    required: false
+    default: 'false'
+  mono-repo-product-name:
+    description: "The product name to match against. For example, 'bob', would match the tags like 'bob_1.2.3'. Required if 'mono-repo-mode' is enabled."
+    required: false
+    default: ''
+  mono-repo-product-path:
+    description: "The path to the product. IE: 'path/to/bob'. Required if 'mono-repo-mode' is enabled."
+    required: false
+    default: ''
 outputs:
   new-version:
     description: "New Version"
@@ -23,8 +35,13 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - name: Checkout to the depth of the last DETECTED version.
-      uses: AlexAtkinson/github-action-checkout-from-tag@latest
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Ensure full commit history
+      run: |
+          cd $GITHUB_WORKSPACE
+          git pull --unshallow
+      shell: bash
     - name: Detect Previous Version
       id: previous-version
       run: |
@@ -36,24 +53,34 @@ runs:
       run: |
           cd $GITHUB_WORKSPACE
           opt=''
-          [[ "${{ inputs.force-re-evaluate }}" == 'true' ]] && opt='-f'
-          [[ "${{ inputs.force-re-evaluate }}" == 'true' ]] && opt='-p'
-          new_version="$(${{ github.action_path }}/scripts/detectNewVersion.sh $opt)"
+          [[ "${{ inputs.force-re-evaluate }}" == 'true' ]] && opt='$opt -f'
+          [[ "${{ inputs.force-patch-increment }}" == 'true' ]] && opt='$opt -p'
+          [[ "${{ inputs.mono-repo-mode }}" == 'true' ]] && opt='$opt -m'
+          if [[ "${{ inputs.mono-repo-mode }}" == 'true' && -z ${{ inputs.mono-repo-product-name }} ]]; then
+            echo -e "ERROR: 571 - mono-repo-product-name must be set and NOT null!"
+            exit 1 || true
+          fi
+          [[ -n "${{ inputs.mono-repo-product-name }}" ]] && opt='$opt -n ${{ inputs.mono-repo-product-name }}'
+          new_version="$(${{ github.action_path }}/scripts/detectNewVersion.sh $opt)" || true
           echo "new-version=$new_version" | tee $GITHUB_OUTPUT
+          if [[ "$new_version" =~ "520" ]]; then
+            echo -e "ERROR: 520 - You must source this script when specifying an environment variable! Eg: '. ./foo.sh -e bar_ver'"
+            exit 1 || true
+          fi
           if [[ "$new_version" =~ "570" ]]; then
-            echo -e "\e[01;31mERROR\e[00m: 570 - Invalid argument!"
+            echo -e "ERROR: 570 - Invalid argument!"
             exit 1 || true
           fi
           if [[ "$new_version" =~ "590" ]]; then
-            echo -e "\e[01;31mFATAL\e[00m: 501 - This is not a git repository!"
+            echo -e "FATAL: 501 - This is not a git repository!"
             exit 1 || true
           fi
           if [[ "$new_version" =~ "591" ]]; then
-            echo -e "\e[01;31mERROR\e[0m: 591 - Unsupported origin host."
+            echo -e "ERROR: 591 - Unsupported origin host."
             exit 1 || true
           fi
           if [[ "$new_version" =~ "599" ]]; then
-            echo -e "\e[01;31mERROR\e[00m: 599 - No feature, enhancement, fix, bugfix, hotfix, or ops branches detected!"
+            echo -e "ERROR: 599 - No feature, enhancement, fix, bugfix, hotfix, or ops branches detected!"
             exit 1 || true
           fi
       shell: bash

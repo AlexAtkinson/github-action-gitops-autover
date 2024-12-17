@@ -47,6 +47,13 @@ DESCRIPTION
       -p      Increments PATCH version on _every_ run.
               WARN: This is intended development use only.
 
+      -m      Enables mono-repo mode, allowing matching against semvers prefixed with
+              a product name. Eg: 'cool-app_1.2.3'
+
+      -n      The product name to match against. EG: 'bob' would match tags like 'bob_1.2.3'.
+
+      -d      The directory of the product to version. EG: 'path/to/bob'.
+
 EXAMPLES
       The following detects the new version for the repo.
 
@@ -75,7 +82,7 @@ fi
 # --------------------------------------------------------------------------------------------------
 
 OPTIND=1
-while getopts "he:vfp" opt; do
+while getopts "he:vfpmn:d:" opt; do
   case $opt in
     h)
       printHelp
@@ -95,9 +102,23 @@ while getopts "he:vfp" opt; do
     p)
       arg_p='set'
       ;;
+    m)
+      arg_m='set'
+      arg_opts="$arg_opts -m"
+      ;;
+    n)
+      arg_n='set'
+      arg_n_val="$OPTARG"
+      arg_opts="$arg_opts -n $OPTARG"
+      ;;
+    d)
+      arg_d='set'
+      arg_d_val="$OPTARG"
+      arg_d_opt="--full-history"
+      arg_opts="$arg_opts -d $OPTARG"
+      ;;
     *)
       echo -e "\e[01;31mERROR\e[00m: 570 - Invalid argument!"
-    echo "::error title=Argument Error::ERROR 570 - Invalid argument!"
       printHelp
       if [[ "$sourced" == 0 ]]; then
         exit 0
@@ -119,13 +140,13 @@ tsCmd='date --utc +%FT%T.%3NZ'
 relative_path="$(dirname "${BASH_SOURCE[0]}")"
 dir="$(realpath "${relative_path}")"
 
-lastVersion=$(/usr/bin/env bash -c "${dir}/detectPreviousVersion.sh")
-lastVersionMajor=$(/usr/bin/env bash -c "${dir}/validateSemver.sh -p major $lastVersion")
-lastVersionMinor=$(/usr/bin/env bash -c "${dir}/validateSemver.sh -p minor $lastVersion")
-lastVersionPatch=$(/usr/bin/env bash -c "${dir}/validateSemver.sh -p patch $lastVersion")
-lastVersionCommitHash=$(/usr/bin/env bash -c "${dir}/detectPreviousVersion.sh -c")
+lastVersion=$(/usr/bin/env bash -c "${dir}/detectPreviousVersion.sh -9 $arg_opts")
+lastVersionMajor=$(/usr/bin/env bash -c "${dir}/validateSemver.sh -p major $lastVersion $arg_opts")
+lastVersionMinor=$(/usr/bin/env bash -c "${dir}/validateSemver.sh -p minor $lastVersion $arg_opts")
+lastVersionPatch=$(/usr/bin/env bash -c "${dir}/validateSemver.sh -p patch $lastVersion $arg_opts")
+lastVersionCommitHash=$(/usr/bin/env bash -c "${dir}/detectPreviousVersion.sh -9 -c $arg_opts")
 lastCommitHash=$(git rev-parse HEAD)
-firstCommitHash=$(git rev-list --max-parents=0 HEAD)
+firstCommitHash=$(git rev-list --max-parents=0 HEAD | tail -n 1)
 
 ci_name=$("${dir}/detect-ci.sh")
 origin=$(git config --get remote.origin.url)
@@ -155,7 +176,6 @@ case "$origin_host" in
   ;;
   *)
     echo -e "\e[01;31mERROR\e[0m: 591 - Unsupported origin host."
-    echo "::error title=Origin Host Error::ERROR 591 - Unsupported origin host!"
     exit 1
   ;;
 esac
@@ -167,17 +187,16 @@ esac
 if [[ -n $arg_e ]]; then
   if [[ "$sourced" == 0 ]]; then
     echo -e "[$(${tsCmd})] \e[01;31mERROR\e[00m: 520 - You must source this script when specifying an environment variable! Eg: '. ./${0##*/} -e foo_ver'\n"
-    echo "::error title=Usage Error::ERROR 520 - You must source this script when specifying an environment variable! Eg: '. ./foo.sh -e bar_ver'"
     exit 1
   fi
 fi
 
-git log --pretty=oneline "$lastVersionCommitHash".."$lastCommitHash" | grep '+semver' | grep -q 'major\|breaking' && incrementMajor='true'
+git log $arg_d_opt --pretty=oneline "$lastVersionCommitHash".."$lastCommitHash" $arg_d_val | grep '+semver' | grep -q 'major\|breaking' && incrementMajor='true'
 
 if [[ $incrementMajor != 'true' ]]; then
   IFS=$'\r\n'
   if [[ -n $arg_f ]]; then
-    for i in $(git log --pretty=oneline "${firstCommitHash}".."${lastCommitHash}" | awk -v s="$merge_string" -v c="$column" '$0 ~ s {print $c}' | awk -v f="$field" -F'/' '{print $f}' | tr -d "'" | grep -i '^enhancement$\|^feature$\|^fix$\|^hotfix$\|^bugfix$\|^ops$' | awk -F '\r' '{print $1}' | sort | uniq -c | sort -nr) ; do
+    for i in $(git log $arg_d_opt --pretty=oneline "${firstCommitHash}".."${lastCommitHash}" $arg_d_val | awk -v s="$merge_string" -v c="$column" '$0 ~ s {print $c}' | awk -v f="$field" -F'/' '{print $f}' | tr -d "'" | grep -i '^enhancement$\|^feature$\|^fix$\|^hotfix$\|^bugfix$\|^ops$' | awk -F '\r' '{print $1}' | sort | uniq -c | sort -nr) ; do
       varname=$(echo "$i" | awk '{print $2}')
       varname=${varname,,}
       value=$(echo "$i" | awk '{print $1}')
@@ -185,7 +204,7 @@ if [[ $incrementMajor != 'true' ]]; then
       declare count_"$varname"="$value"
     done
   else
-    for i in $(git log --pretty=oneline "${lastVersionCommitHash}".."${lastCommitHash}" | awk -v s="$merge_string" -v c="$column" '$0 ~ s {print $c}' | awk -v f="$field" -F'/' '{print $f}' | tr -d "'" | grep -i '^enhancement$\|^feature$\|^fix$\|^hotfix$\|^bugfix$\|^ops$' | awk -F '\r' '{print $1}' | sort | uniq -c | sort -nr) ; do
+    for i in $(git log $arg_d_opt --pretty=oneline "${lastVersionCommitHash}".."${lastCommitHash}" $arg_d_val | awk -v s="$merge_string" -v c="$column" '$0 ~ s {print $c}' | awk -v f="$field" -F'/' '{print $f}' | tr -d "'" | grep -i '^enhancement$\|^feature$\|^fix$\|^hotfix$\|^bugfix$\|^ops$' | awk -F '\r' '{print $1}' | sort | uniq -c | sort -nr) ; do
       varname=$(echo "$i" | awk '{print $2}')
       varname=${varname,,}
       value=$(echo "$i" | awk '{print $1}')
@@ -208,7 +227,6 @@ if [[ -n $arg_f ]]; then
 else
   if [[ -z $incrementMajor && -z $count_feature && -z $count_enhancement && -z $count_fix && -z $count_bugfix && -z $count_hotfix && -z $count_ops ]]; then
     echo -e "\e[01;31mERROR\e[00m: 599 - No feature, enhancement, fix, bugfix, hotfix, or ops branches detected!"
-    echo "::error title=No Valid Merge Detected::ERROR 599 - No feature, enhancement, fix, bugfix, hotfix, or ops branches detected!"
     exit 1
   fi
 fi
@@ -240,7 +258,8 @@ elif [[ -n $arg_p ]]; then
   newVersionPatch=$((lastVersionPatch + 1))
 fi
 
-newVersion=$(/usr/bin/env bash -c "${dir}/validateSemver.sh -9p full $newVersionMajor.$newVersionMinor.$newVersionPatch")
+newVersion=$(/usr/bin/env bash -c "${dir}/validateSemver.sh -9p full $newVersionMajor.$newVersionMinor.$newVersionPatch $arg_opts")
+[[ -n $arg_n ]] && newVersion="${arg_n_val}_${newVersion}"
 
 if [[ -n $arg_e ]]; then
   export_var="$arg_e_val"
