@@ -15,7 +15,7 @@ NAME
       validateSemver.sh
 
 SYNOPSIS
-      ${0##*/} [-hpv9] <version>
+      ${0##*/} [-hpv9nd] <version>
 
 DESCRIPTION
       Validates the schema of a provided version string against the semantic versioning standard.
@@ -48,10 +48,9 @@ DESCRIPTION
 
                   (v)[Major].[Minor].[Patch]
 
-      -m      Enables mono-repo mode, allowing matching against semvers prefixed with
-              a product name. Eg: 'cool-app_1.2.3'
-
-      -n      The product name to match against. EG: 'bob' would match tags like 'bob_1.2.3'.
+      -n      Enables mono-repo mode allowing the product name to match against tags.
+              EG: 'bob' would match tags like 'bob_1.2.3'.
+              TIP: dir names and product names should match. This arg exists in case they do not.
 
       -d      The directory of the product to version. EG: 'path/to/bob'.
 
@@ -87,7 +86,7 @@ fi
 # --------------------------------------------------------------------------------------------------
 
 OPTIND=1
-while getopts "hp:v9mn:d:" opt; do
+while getopts "hp:v9n:d:" opt; do
   case $opt in
     h)
       printHelp
@@ -102,10 +101,6 @@ while getopts "hp:v9mn:d:" opt; do
       ;;
     9)
       arg_9='set'
-      ;;
-    m)
-      arg_m='set'
-      arg_opts="$arg_opts -m"
       ;;
     n)
       arg_n='set'
@@ -135,10 +130,10 @@ tsCmd='date --utc +%FT%T.%3NZ'
 
 if [[ -n $arg_9 ]]; then
   semverRegex="^[v]?(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
-  [[ -n $arg_m ]] && semverRegex="([0-9A-Za-z]+)?[_-]?[v]?(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+  [[ -n $arg_d ]] && semverRegex="([0-9A-Za-z]+)?[_-]?[v]?(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
 else
   semverRegex="^[v]?(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(\\-([0-9A-Za-z]+))?(\\+((([1-9])|([1-9][0-9]+))))?$"
-  [[ -n $arg_m ]] && semverRegex="^([0-9A-Za-z]+)?[_-]?[v]?(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(\\-([0-9A-Za-z]+))?(\\+((([1-9])|([1-9][0-9]+))))?$"
+  [[ -n $arg_d ]] && semverRegex="^([0-9A-Za-z]+)?[_-]?[v]?(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(\\-([0-9A-Za-z]+))?(\\+((([1-9])|([1-9][0-9]+))))?$"
 fi
 
 # --------------------------------------------------------------------------------------------------
@@ -175,7 +170,7 @@ function validateSemver {
   else
     [[ -z $arg_9 && -n $arg_v ]] && echo -e "[$(${tsCmd})] \e[01;31mFATAL\e[00m: '$version' does not match the semver schema: '(v)[Major].[Minor].[Patch](-PRERELEASE)(+BUILD)'!\n"
     [[ -n $arg_9 && -n $arg_v ]] && echo -e "[$(${tsCmd})] \e[01;31mFATAL\e[00m: '$version' does not match the semver schema: '(v)[Major].[Minor].[Patch]'!\n"
-    [[ -n $arg_9 && -n $arg_v && -n $arg_m ]] && echo -e "[$(${tsCmd})] \e[01;31mFATAL\e[00m: '$version' does not match the semver schema: '[product_name][-_](v)[Major].[Minor].[Patch]'!\n"
+    [[ -n $arg_9 && -n $arg_v && -n $arg_d ]] && echo -e "[$(${tsCmd})] \e[01;31mFATAL\e[00m: '$version' does not match the semver schema: '[product_name][-_](v)[Major].[Minor].[Patch]'!\n"
     exit 1
   fi
 }

@@ -29,7 +29,7 @@ NAME
       ${0##*/}
 
 SYNOPSIS
-      ${0##*/} [-hv]
+      ${0##*/} [-hefpnd]
 
 DESCRIPTION
       Detects the new version for the repository by analyzing the gitflow branch history since the
@@ -47,10 +47,9 @@ DESCRIPTION
       -p      Increments PATCH version on _every_ run.
               WARN: This is intended development use only.
 
-      -m      Enables mono-repo mode, allowing matching against semvers prefixed with
-              a product name. Eg: 'cool-app_1.2.3'
-
-      -n      The product name to match against. EG: 'bob' would match tags like 'bob_1.2.3'.
+      -n      Enables mono-repo mode allowing the product name to match against tags.
+              EG: 'bob' would match tags like 'bob_1.2.3'.
+              TIP: dir names and product names should match. This arg exists in case they do not.
 
       -d      The directory of the product to version. EG: 'path/to/bob'.
 
@@ -82,7 +81,7 @@ fi
 # --------------------------------------------------------------------------------------------------
 
 OPTIND=1
-while getopts "he:vfpmn:d:" opt; do
+while getopts "he:vfpn:d:" opt; do
   case $opt in
     h)
       printHelp
@@ -101,10 +100,6 @@ while getopts "he:vfpmn:d:" opt; do
       ;;
     p)
       arg_p='set'
-      ;;
-    m)
-      arg_m='set'
-      arg_opts="$arg_opts -m"
       ;;
     n)
       arg_n='set'
