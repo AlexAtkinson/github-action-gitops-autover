@@ -15,7 +15,7 @@ NAME
       detectPreviousVersion.sh
 
 SYNOPSIS
-      ${0##*/} [-hvc]
+      ${0##*/} [-hvcnd]
 
 DESCRIPTION
       Detects most recent version tag of the repository.
@@ -29,6 +29,12 @@ DESCRIPTION
       -v      Verbose mode. Prints additional information to stdout if available.
 
       -c      Prints the commit hash instead of the detected version to stdout.
+
+      -n      Enables mono-repo mode allowing the product name to match against tags.
+              EG: 'bob' would match tags like 'bob_1.2.3'.
+              TIP: dir names and product names should match. This arg exists in case they do not.
+
+      -d      The directory of the product to version. EG: 'path/to/bob'.
 
 EXAMPLES
       Detects previous version, printing additional information if available.
@@ -59,7 +65,7 @@ fi
 # --------------------------------------------------------------------------------------------------
 
 OPTIND=1
-while getopts "hvc" opt; do
+while getopts "hv9cn:d:" opt; do
   case $opt in
     h)
       printHelp
@@ -70,6 +76,20 @@ while getopts "hvc" opt; do
       ;;
     c)
       arg_c='set'
+      ;;
+    9)
+      arg_9='set'
+      ;;
+    n)
+      arg_n='set'
+      arg_n_val="$OPTARG"
+      arg_opts="$arg_opts -n $OPTARG"
+      ;;
+    d)
+      arg_d='set'
+      arg_d_val="$OPTARG"
+      arg_d_opt="--full-history"
+      arg_opts="$arg_opts -d $OPTARG"
       ;;
     *)
       echo -e "\e[01;31mERROR\e[00m: Invalid argument!"
@@ -85,30 +105,42 @@ shift $((OPTIND-1))
 # --------------------------------------------------------------------------------------------------
 
 tsCmd='date --utc +%FT%T.%3NZ'
-semverRegex="^[v]?(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(\\-([0-9A-Za-z]+))?(\\+((([1-9])|([1-9][0-9]+))))?$"
+
+if [[ -n $arg_9 ]]; then
+  semverRegex="^[v]?(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+  [[ -n $arg_d ]] && semverRegex="([0-9A-Za-z]+)?[_-]?[v]?(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+else
+  semverRegex="^[v]?(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(\\-([0-9A-Za-z]+))?(\\+((([1-9])|([1-9][0-9]+))))?$"
+  [[ -n $arg_d ]] && semverRegex="^([0-9A-Za-z]+)?[_-]?[v]?(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(\\-([0-9A-Za-z]+))?(\\+((([1-9])|([1-9][0-9]+))))?$"
+fi
 
 relative_path="$(dirname "${BASH_SOURCE[0]}")"
 dir="$(realpath "${relative_path}")"
 
 lastVersion=$(git for-each-ref --sort=creatordate --format '%(refname:lstrip=2)' refs/tags | grep -E "$semverRegex" | tail -n 1)
+# Support mono-repos where a product name is specified.
+[[ -n $arg_n ]] && lastVersion=$(git for-each-ref --sort=creatordate --format '%(refname:lstrip=2)' refs/tags | grep "$arg_n_val" | grep -E "$semverRegex" | tail -n 1)
 
 # --------------------------------------------------------------------------------------------------
 # Sanity (2/2)
 # --------------------------------------------------------------------------------------------------
 
 if [[ "$lastVersion" == '' ]]; then
-  [[ -n $arg_v ]] && echo -e "[$(${tsCmd})] INFO: No previous version detected. Initializing at '0.0.0'.\n"
+  [[ -n $arg_v && -z $arg_n ]] && echo -e "[$(${tsCmd})] INFO: No previous version detected. Initializing at '0.0.0'.\n"
+  [[ -n $arg_v && -n $arg_n ]] && echo -e "[$(${tsCmd})] INFO: No previous version detected. Initializing at '${arg_n_val}_0.0.0'.\n"
   lastVersion='0.0.0'
   lastVersionCommitHash=$(git rev-list --max-parents=0 HEAD)
 else
-  if ! bash -c "${dir}/validateSemver.sh -v9 $lastVersion"; then
+  if ! bash -c "${dir}/validateSemver.sh -v9 $arg_opts $lastVersion"; then
     exit 1
   else
     lastVersionCommitHash=$(git rev-list -n 1 "$lastVersion")
     # Ensure lastVersion does not include a leading [vV]
-    lastVersion=$(bash -c "${dir}/validateSemver.sh -v9p full $lastVersion")
+    lastVersion=$(bash -c "${dir}/validateSemver.sh -v9p full $arg_opts $lastVersion")
   fi
 fi
+
+[[ -n $arg_n ]] && lastVersion="${arg_n_val}_${lastVersion}"
 
 # --------------------------------------------------------------------------------------------------
 # Main Operations

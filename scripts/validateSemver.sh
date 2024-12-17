@@ -15,7 +15,7 @@ NAME
       validateSemver.sh
 
 SYNOPSIS
-      ${0##*/} [-hpv9] <version>
+      ${0##*/} [-hpv9nd] <version>
 
 DESCRIPTION
       Validates the schema of a provided version string against the semantic versioning standard.
@@ -47,6 +47,12 @@ DESCRIPTION
       -9      Agile CICD mode. Matches against the agile (everything is potentially releasable) schema:
 
                   (v)[Major].[Minor].[Patch]
+
+      -n      Enables mono-repo mode allowing the product name to match against tags.
+              EG: 'bob' would match tags like 'bob_1.2.3'.
+              TIP: dir names and product names should match. This arg exists in case they do not.
+
+      -d      The directory of the product to version. EG: 'path/to/bob'.
 
 EXAMPLES
       The following returns an exit code of 0, as the supplied version is Agile CICD compliant.
@@ -80,7 +86,7 @@ fi
 # --------------------------------------------------------------------------------------------------
 
 OPTIND=1
-while getopts "hp:v9" opt; do
+while getopts "hp:v9n:d:" opt; do
   case $opt in
     h)
       printHelp
@@ -95,6 +101,17 @@ while getopts "hp:v9" opt; do
       ;;
     9)
       arg_9='set'
+      ;;
+    n)
+      arg_n='set'
+      arg_n_val="$OPTARG"
+      arg_opts="$arg_opts -n $OPTARG"
+      ;;
+    d)
+      arg_d='set'
+      arg_d_val="$OPTARG"
+      arg_d_opt="--full-history"
+      arg_opts="$arg_opts -d $OPTARG"
       ;;
     *)
       echo -e "\e[01;31mERROR\e[00m: Invalid argument!"
@@ -113,8 +130,10 @@ tsCmd='date --utc +%FT%T.%3NZ'
 
 if [[ -n $arg_9 ]]; then
   semverRegex="^[v]?(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+  [[ -n $arg_d ]] && semverRegex="([0-9A-Za-z]+)?[_-]?[v]?(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
 else
   semverRegex="^[v]?(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(\\-([0-9A-Za-z]+))?(\\+((([1-9])|([1-9][0-9]+))))?$"
+  [[ -n $arg_d ]] && semverRegex="^([0-9A-Za-z]+)?[_-]?[v]?(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(\\-([0-9A-Za-z]+))?(\\+((([1-9])|([1-9][0-9]+))))?$"
 fi
 
 # --------------------------------------------------------------------------------------------------
@@ -123,6 +142,8 @@ fi
 
 function validateSemver {
   local version=$1
+  version=${version##*_}
+  version=${version##*-}
   [[ "$version" =~ ^[vV]* ]] && version=${version//^[vV]/""/}
   if [[ "$version" =~ $semverRegex ]]; then
     local major=${BASH_REMATCH[1]}
@@ -149,6 +170,7 @@ function validateSemver {
   else
     [[ -z $arg_9 && -n $arg_v ]] && echo -e "[$(${tsCmd})] \e[01;31mFATAL\e[00m: '$version' does not match the semver schema: '(v)[Major].[Minor].[Patch](-PRERELEASE)(+BUILD)'!\n"
     [[ -n $arg_9 && -n $arg_v ]] && echo -e "[$(${tsCmd})] \e[01;31mFATAL\e[00m: '$version' does not match the semver schema: '(v)[Major].[Minor].[Patch]'!\n"
+    [[ -n $arg_9 && -n $arg_v && -n $arg_d ]] && echo -e "[$(${tsCmd})] \e[01;31mFATAL\e[00m: '$version' does not match the semver schema: '[product_name][-_](v)[Major].[Minor].[Patch]'!\n"
     exit 1
   fi
 }
