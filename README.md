@@ -63,13 +63,8 @@ git push --set-upstream origin fix/not-a-feature
 Note: Only required for setting up mono-repo versioning.
 
 <dl>
-  <dt>mono-repo-mode: [bool]</dt>
-    <dd>Enable semver matching against any tag structure that includes a valid semver string.<br>
-    Eg: '&lt;product-name&gt;_&lt;semver&gt;'<br>
-    <i>Required:</i> false<br>
-    <i>Default:</i> false</dd>
   <dt>mono-repo-product-name: [string]</dt>
-    <dd>The product name to match against.<br>
+    <dd>Enables mono-repo mode. The product name to match against.<br>
     Eg: 'bob', would match the tags like 'bob_1.2.3'.<br>
     <i>Required:</i> if mono-repo-mode: true<br>
     <i>Default:</i> ''</dd>
@@ -113,7 +108,7 @@ Below is a valid workflow utilizing this action. If you wanted to extend it to d
         - uses: actions/checkout@v3
         - name: Run GitOps Automatic Versioning Action
           id: gitops-autover
-          uses: AlexAtkinson/github-action-gitops-autover@0.3.0
+          uses: AlexAtkinson/github-action-gitops-autover@0.3.1
         - name: Verify Outputs
           run: |
             NEW_VERSION=${{ steps.gitops-autover.outputs.new-version }}
@@ -125,9 +120,8 @@ To make use of the mono-repo support, simply add a block for the director you wi
 
         - name: Run GitOps Automatic Versioning Action
           id: gitops-autover
-          uses: AlexAtkinson/github-action-gitops-autover@0.3.0
+          uses: AlexAtkinson/github-action-gitops-autover@0.3.1
           with:
-            mono-repo-mode: true
             mono-repo-product-name: bob
 
 This results in outputs like:
@@ -189,7 +183,7 @@ Additionally, this repo uses its own action for versioning, so feel free to inve
             echo "PRODUCT_NAME_LOWER=$PRODUCT_NAME_LOWER" >> $GITHUB_OUTPUT
         - name: GitOps Automatic Versioning
           id: gitops-autover
-          uses: AlexAtkinson/github-action-gitops-autover@0.3.0
+          uses: AlexAtkinson/github-action-gitops-autover@0.3.1
       build:
         name: "Build"
         runs-on: ubuntu-latest
