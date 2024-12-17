@@ -15,7 +15,7 @@ NAME
       detectPreviousVersion.sh
 
 SYNOPSIS
-      ${0##*/} [-hvc]
+      ${0##*/} [-hvcnd]
 
 DESCRIPTION
       Detects most recent version tag of the repository.
@@ -30,10 +30,9 @@ DESCRIPTION
 
       -c      Prints the commit hash instead of the detected version to stdout.
 
-      -m      Enables mono-repo mode, allowing matching against semvers prefixed with
-              a product name. Eg: 'cool-app_1.2.3'
-
-      -n      The product name to match against. EG: 'bob' would match tags like 'bob_1.2.3'.
+      -n      Enables mono-repo mode allowing the product name to match against tags.
+              EG: 'bob' would match tags like 'bob_1.2.3'.
+              TIP: dir names and product names should match. This arg exists in case they do not.
 
       -d      The directory of the product to version. EG: 'path/to/bob'.
 
@@ -66,7 +65,7 @@ fi
 # --------------------------------------------------------------------------------------------------
 
 OPTIND=1
-while getopts "hv9cmn:d:" opt; do
+while getopts "hv9cn:d:" opt; do
   case $opt in
     h)
       printHelp
@@ -80,10 +79,6 @@ while getopts "hv9cmn:d:" opt; do
       ;;
     9)
       arg_9='set'
-      ;;
-    m)
-      arg_m='set'
-      arg_opts="$arg_opts -m"
       ;;
     n)
       arg_n='set'
@@ -113,10 +108,10 @@ tsCmd='date --utc +%FT%T.%3NZ'
 
 if [[ -n $arg_9 ]]; then
   semverRegex="^[v]?(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
-  [[ -n $arg_m ]] && semverRegex="([0-9A-Za-z]+)?[_-]?[v]?(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+  [[ -n $arg_d ]] && semverRegex="([0-9A-Za-z]+)?[_-]?[v]?(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
 else
   semverRegex="^[v]?(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(\\-([0-9A-Za-z]+))?(\\+((([1-9])|([1-9][0-9]+))))?$"
-  [[ -n $arg_m ]] && semverRegex="^([0-9A-Za-z]+)?[_-]?[v]?(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(\\-([0-9A-Za-z]+))?(\\+((([1-9])|([1-9][0-9]+))))?$"
+  [[ -n $arg_d ]] && semverRegex="^([0-9A-Za-z]+)?[_-]?[v]?(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(\\-([0-9A-Za-z]+))?(\\+((([1-9])|([1-9][0-9]+))))?$"
 fi
 
 relative_path="$(dirname "${BASH_SOURCE[0]}")"
