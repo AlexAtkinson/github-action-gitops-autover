@@ -51,10 +51,6 @@ runs:
           opt=''
           [[ "${{ inputs.force-re-evaluate }}" == 'true' ]] && opt='$opt -f'
           [[ "${{ inputs.force-patch-increment }}" == 'true' ]] && opt='$opt -p'
-          if [[ -z ${{ inputs.mono-repo-product-name }} ]]; then
-            echo -e "ERROR: 571 - mono-repo-product-name must be set and NOT null!"
-            exit 1 || true
-          fi
           [[ "${{ inputs.mono-repo-product-name }}" != "" ]] && opt='$opt -n ${{ inputs.mono-repo-product-name }}'
           [[ "${{ inputs.mono-repo-product-path }}" != "" ]] && opt='$opt -d ${{ inputs.mono-repo-product-path }}'
           new_version="$(${{ github.action_path }}/scripts/detectNewVersion.sh $opt)" || true
