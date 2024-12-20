@@ -28,6 +28,9 @@ outputs:
   previous-version:
     description: "Previous Version"
     value: ${{ steps.previous-version.outputs.previous-version }}
+  debug-cmd:
+    description: "Input Command"
+    value: ${{ steps.previous-version.outputs.debug-cmd }}
 runs:
   using: "composite"
   steps:
@@ -76,6 +79,17 @@ runs:
             echo -e "ERROR: 599 - No feature, enhancement, fix, bugfix, hotfix, or ops branches detected!"
             exit 1 || true
           fi
+    - name: Debug Cmd
+      id: debug-cmd
+      run: |
+          cd $GITHUB_WORKSPACE
+          opt=''
+          [[ "${{ github.event.inputs.force-re-evaluate }}" == 'true' ]] && opt='$opt -f'
+          [[ "${{ github.event.inputs.force-patch-increment }}" == 'true' ]] && opt='$opt -p'
+          [[ "${{ github.event.inputs.mono-repo-product-name }}" != "" ]] && opt='$opt -n ${{ github.event.inputs.mono-repo-product-name }}'
+          [[ "${{ github.event.inputs.mono-repo-product-path }}" != "" ]] && opt='$opt -d ${{ github.event.inputs.mono-repo-product-path }}'
+          debug_cmd="echo ${{ github.action_path }}/scripts/detectNewVersion.sh $opt" || true
+          echo "debug-cmd=$debug_cmd" | tee $GITHUB_OUTPUT
       shell: bash
 
 # See github contexts for more like github.action_path.
