@@ -50,9 +50,17 @@ runs:
           cd $GITHUB_WORKSPACE
           opt=''
           [[ "${{ inputs.force-re-evaluate }}" == 'true' ]] && opt='$opt -f'
+          [[ "${{ inputs.force-re-evaluate }}" == 'true' ]] && echo "DEBUG 01: ${{ inputs.force-re-evaluate }}"
+          echo "DEBUG 01x: ${{ inputs.force-re-evaluate }}"
           [[ "${{ inputs.force-patch-increment }}" == 'true' ]] && opt='$opt -p'
+          [[ "${{ inputs.force-patch-increment }}" == 'true' ]] && echo "DEBUG 02: ${{ inputs.force-patch-increment }}"
+          echo "DEBUG 02x: ${{ inputs.force-patch-increment }}"
           [[ "${{ inputs.mono-repo-product-name }}" != "" ]] && opt='$opt -n ${{ inputs.mono-repo-product-name }}'
+          [[ "${{ inputs.mono-repo-product-name }}" != "" ]] && echo "DEBUG 03: ${{ inputs.mono-repo-product-name }}"
+          echo "DEBUG 03x: ${{ inputs.mono-repo-product-name }}"
           [[ "${{ inputs.mono-repo-product-path }}" != "" ]] && opt='$opt -d ${{ inputs.mono-repo-product-path }}'
+          [[ "${{ inputs.mono-repo-product-path }}" != "" ]] && echo "DEBUG 04: ${{ inputs.mono-repo-product-path }}"
+          echo "DEBUG 04x: ${{ inputs.mono-repo-product-path }}"
           new_version="$(${{ github.action_path }}/scripts/detectNewVersion.sh $opt)" || true
           echo "new-version=$new_version" | tee $GITHUB_OUTPUT
           if [[ "$new_version" =~ "520" ]]; then
