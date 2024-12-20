@@ -79,6 +79,7 @@ runs:
             echo -e "ERROR: 599 - No feature, enhancement, fix, bugfix, hotfix, or ops branches detected!"
             exit 1 || true
           fi
+      shell: bash
     - name: Debug Cmd
       id: debug-cmd
       run: |
