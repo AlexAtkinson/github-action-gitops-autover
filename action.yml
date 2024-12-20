@@ -54,6 +54,7 @@ runs:
           [[ "${{ github.event.inputs.mono-repo-product-name }}" != "" ]] && opt='$opt -n ${{ github.event.inputs.mono-repo-product-name }}'
           [[ "${{ github.event.inputs.mono-repo-product-path }}" != "" ]] && opt='$opt -d ${{ github.event.inputs.mono-repo-product-path }}'
           new_version="$(${{ github.action_path }}/scripts/detectNewVersion.sh $opt)" || true
+          debug_cmd="echo ${{ github.action_path }}/scripts/detectNewVersion.sh $opt" || true
           echo "new-version=$new_version" | tee $GITHUB_OUTPUT
           if [[ "$new_version" =~ "520" ]]; then
             echo -e "ERROR: 520 - You must source this script when specifying an environment variable! Eg: '. ./foo.sh -e bar_ver'"
